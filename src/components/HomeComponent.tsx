@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import TextController from "./TextController";
 import { AdharSchema } from "@/utils/schema";
@@ -17,6 +17,9 @@ const HomeComponent = () => {
 		formState: { errors },
 	} = useForm({
 		mode: "all",
+		defaultValues: {
+			gender: "",
+		},
 		resolver: yupResolver(AdharSchema),
 	});
 
@@ -78,7 +81,9 @@ const HomeComponent = () => {
 			<div className="w-full flex items-center space-x-4">
 				<button
 					type="button"
-					onClick={() => reset()}
+					onClick={() => {
+						reset();
+					}}
 					className="bg-slate-200 shadow-md px-4 py-2 rounded border-[1px]  active:shadow-none"
 				>
 					Reset

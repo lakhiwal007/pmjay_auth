@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // Styles
 import "./QrStyles.css";
@@ -10,6 +10,7 @@ import QrFrame from "@/public/qr-frame.svg";
 import Image from "next/image";
 import useQrString from "@/hooks/useQrString";
 import { MdOutlineQrCodeScanner } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const QrReader = ({ setValue }: any) => {
 	// QR States
@@ -17,22 +18,37 @@ const QrReader = ({ setValue }: any) => {
 	const videoEl = useRef<HTMLVideoElement>(null);
 	const qrBoxEl = useRef<HTMLDivElement>(null);
 	const [qrOn, setQrOn] = useState<boolean>(true);
+	const [showVideo, setShowVideo] = useState<boolean>(false);
 
 	// Result
 	const [scannedResult, setScannedResult] = useState<string>("");
 
 	const { name, address, dob, gender } = useQrString(scannedResult);
-	useEffect(() => {
-		if (name !== null && dob !== null) {
-			const [day, month, year] = dob.split("/");
-			const _dob = new Date(Number(year), Number(month) - 1, Number(day));
+
+	useMemo(() => {
+		if (gender !== null) {
 			console.log("gender", gender);
-			setValue("name", name);
-			setValue("dob", _dob);
-			setValue("gender", gender || "M", {
+			setValue("gender", gender, {
 				shouldValidate: true,
 			});
-			setValue("address", address);
+		}
+	}, [setValue, gender]);
+
+	useEffect(() => {
+		if (name !== null && dob !== null) {
+			toast.success("Data Fetched successfully!");
+			const [day, month, year] = dob.split("/");
+			const _dob = new Date(Number(year), Number(month) - 1, Number(day));
+			setValue("name", name, {
+				shouldValidate: true,
+			});
+			setValue("dob", _dob, {
+				shouldValidate: true,
+			});
+
+			setValue("address", address, {
+				shouldValidate: true,
+			});
 		}
 	}, [name, address, dob, gender, setValue]);
 
@@ -51,7 +67,16 @@ const QrReader = ({ setValue }: any) => {
 		console.log(err);
 	};
 
+	// ❌ If "camera" is not allowed in browser permissions, show an alert.
 	useEffect(() => {
+		if (!qrOn)
+			alert(
+				"Camera is blocked or not accessible. Please allow camera in your browser permissions and Reload."
+			);
+	}, [qrOn]);
+
+	const handleScan = () => {
+		setShowVideo(true);
 		if (videoEl?.current && !scanner.current) {
 			// 👉 Instantiate the QR Scanner
 			scanner.current = new QrScanner(videoEl?.current, onScanSuccess, {
@@ -73,24 +98,20 @@ const QrReader = ({ setValue }: any) => {
 				.catch((err) => {
 					if (err) setQrOn(false);
 				});
+		} else {
+			scanner.current?.start();
 		}
+	};
 
-		// 🧹 Clean up on unmount.
-		// 🚨 This removes the QR Scanner from rendering and using camera when it is closed or removed from the UI.
-		return () => {
-			if (!videoEl?.current) {
-				scanner?.current?.stop();
-			}
-		};
-	}, []);
-
-	// ❌ If "camera" is not allowed in browser permissions, show an alert.
-	useEffect(() => {
-		if (!qrOn)
-			alert(
-				"Camera is blocked or not accessible. Please allow camera in your browser permissions and Reload."
-			);
-	}, [qrOn]);
+	const handleClose = () => {
+		scanner.current?.stop();
+		setShowVideo(false);
+		setValue("name", "");
+		setValue("address", "");
+		setValue("dob", null);
+		setValue("gender", "");
+		setScannedResult("");
+	};
 
 	return (
 		<div className="qr-reader w-full ">
@@ -99,7 +120,7 @@ const QrReader = ({ setValue }: any) => {
 				<button
 					className="flex items-center px-4 py-2 rounded shadow-lg bg-green-700 text-white active:shadow-none"
 					type="button"
-					onClick={() => scanner.current?.start()}
+					onClick={handleScan}
 				>
 					Scan QR
 					<MdOutlineQrCodeScanner className="ml-2 w-6 h-6" />
@@ -107,12 +128,16 @@ const QrReader = ({ setValue }: any) => {
 				<button
 					className="px-4 py-2 rounded shadow-lg bg-red-700 text-white active:shadow-none"
 					type="button"
-					onClick={() => scanner.current?.stop()}
+					onClick={handleClose}
 				>
 					Close
 				</button>
 			</div>
-			<div className="w-full h-[50vh] mt-4 rounded shadow-lg border-2 border-gray-500">
+			<div
+				className={`w-full h-[50vh] mt-4 rounded shadow-lg border-2 border-gray-500 ${
+					showVideo ? "flex" : "hidden"
+				}`}
+			>
 				<video ref={videoEl}></video>
 				<div ref={qrBoxEl} className="qr-box">
 					<Image
@@ -124,16 +149,6 @@ const QrReader = ({ setValue }: any) => {
 					/>
 				</div>
 			</div>
-
-			{/* Show Data Result if scan is success */}
-			{scannedResult && (
-				<ul className="w-full relative">
-					<li>Name: {name}</li>
-					<li>gender: {gender}</li>
-					<li>dob: {dob}</li>
-					<li>address: {address}</li>
-				</ul>
-			)}
 		</div>
 	);
 };

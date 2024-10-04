@@ -15,8 +15,13 @@ const DateYup = yup
 	.typeError("Enter a valid date");
 
 export const AdharSchema = yup.object().shape({
-	name: TextYup({ len: 3, msg: "Required" }),
-	address: TextYup({ len: 3, msg: "Required" }),
+	name: TextYup({ len: 3, msg: "Min 3 characters allowed" }),
+	address: TextYup({ len: 3, msg: "Min 3 characters allowed" }),
 	dob: DateYup,
-	gender: yup.string().oneOf(["M", "F", "O"]).required("Required*"),
+	gender: yup.string().required("Required*").default("M"),
+});
+
+export const LoginSchema = yup.object().shape({
+	username: TextYup({ len: 6, msg: "Min 6 characters allowed" }),
+	password: TextYup({ len: 6, msg: "Min 6 characters allowed" }),
 });
