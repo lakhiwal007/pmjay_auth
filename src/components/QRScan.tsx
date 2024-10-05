@@ -11,8 +11,29 @@ import Image from "next/image";
 import useQrString from "@/hooks/useQrString";
 import { MdOutlineQrCodeScanner } from "react-icons/md";
 import toast from "react-hot-toast";
+import TextController from "./TextController";
+import DateController from "./DateController";
+import RadioController from "./RadioController";
+import { FieldValues, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { AdharSchema } from "@/utils/schema";
+import { GenderRadio } from "@/utils/constants";
 
-const QrReader = ({ setValue }: any) => {
+const QrReader = () => {
+	const {
+		control,
+		setValue,
+		reset,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		mode: "all",
+		defaultValues: {
+			gender: "",
+		},
+		resolver: yupResolver(AdharSchema),
+	});
+
 	// QR States
 	const scanner = useRef<QrScanner>();
 	const videoEl = useRef<HTMLVideoElement>(null);
@@ -25,21 +46,15 @@ const QrReader = ({ setValue }: any) => {
 
 	const { name, address, dob, gender } = useQrString(scannedResult);
 
-	useMemo(() => {
-		if (gender !== null) {
-			console.log("gender", gender);
-			setValue("gender", gender, {
-				shouldValidate: true,
-			});
-		}
-	}, [setValue, gender]);
-
 	useEffect(() => {
-		if (name !== null && dob !== null) {
+		if (name !== null && dob !== null && gender !== null) {
 			toast.success("Data Fetched successfully!");
 			const [day, month, year] = dob.split("/");
 			const _dob = new Date(Number(year), Number(month) - 1, Number(day));
 			setValue("name", name, {
+				shouldValidate: true,
+			});
+			setValue("gender", gender, {
 				shouldValidate: true,
 			});
 			setValue("dob", _dob, {
@@ -58,6 +73,7 @@ const QrReader = ({ setValue }: any) => {
 		console.log(result);
 		// ✅ Handle success.
 		// 😎 You can do whatever you want with the scanned result.
+		setValue("gender", "F");
 		setScannedResult(result?.data);
 	};
 
@@ -106,11 +122,12 @@ const QrReader = ({ setValue }: any) => {
 	const handleClose = () => {
 		scanner.current?.stop();
 		setShowVideo(false);
-		setValue("name", "");
-		setValue("address", "");
-		setValue("dob", null);
-		setValue("gender", "");
+		reset();
 		setScannedResult("");
+	};
+
+	const onSubmit = (data: FieldValues) => {
+		console.log(data);
 	};
 
 	return (
@@ -125,13 +142,15 @@ const QrReader = ({ setValue }: any) => {
 					Scan QR
 					<MdOutlineQrCodeScanner className="ml-2 w-6 h-6" />
 				</button>
-				<button
-					className="px-4 py-2 rounded shadow-lg bg-red-700 text-white active:shadow-none"
-					type="button"
-					onClick={handleClose}
-				>
-					Close
-				</button>
+				{showVideo && (
+					<button
+						className="px-4 py-2 rounded shadow-lg bg-red-700 text-white active:shadow-none"
+						type="button"
+						onClick={handleClose}
+					>
+						Close
+					</button>
+				)}
 			</div>
 			<div
 				className={`w-full h-[50vh] mt-4 rounded shadow-lg border-2 border-gray-500 ${
@@ -149,6 +168,71 @@ const QrReader = ({ setValue }: any) => {
 					/>
 				</div>
 			</div>
+			<form
+				onSubmit={() => handleSubmit(onSubmit)}
+				className="w-full flex flex-col space-y-4 my-4 px-2"
+			>
+				<div className="w-full">
+					<p>
+						Name
+						<span className="text-orange-600">*</span>
+					</p>
+					<TextController
+						name="name"
+						control={control}
+						error={errors.name?.message}
+						maxLength={50}
+					/>
+				</div>
+				<div className="w-full">
+					<p>
+						Gender<span className="text-orange-600">*</span>
+					</p>
+					<RadioController
+						name={"gender"}
+						control={control}
+						error={errors.gender?.message}
+						data={GenderRadio}
+					/>
+				</div>
+				<div className="w-full">
+					<p>
+						Date of Birth<span className="text-orange-600">*</span>
+					</p>
+					<DateController
+						name={"dob"}
+						error={errors.dob?.message}
+						control={control}
+					/>
+				</div>
+				<div className="w-full">
+					<p>
+						Address
+						<span className="text-orange-600">*</span>
+					</p>
+					<TextController
+						name="address"
+						control={control}
+						error={errors.address?.message}
+						maxLength={50}
+					/>
+				</div>
+				<div className="w-full flex items-center space-x-4">
+					<button
+						type="button"
+						onClick={handleClose}
+						className="bg-slate-200 shadow-md px-4 py-2 rounded border-[1px]  active:shadow-none"
+					>
+						Reset
+					</button>
+					<button
+						type="submit"
+						className="bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
+					>
+						Submit
+					</button>
+				</div>
+			</form>
 		</div>
 	);
 };
