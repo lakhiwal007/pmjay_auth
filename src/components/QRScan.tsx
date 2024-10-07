@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Styles
 import "./QrStyles.css";
@@ -8,16 +8,17 @@ import "./QrStyles.css";
 import QrScanner from "qr-scanner";
 import QrFrame from "@/public/qr-frame.svg";
 import Image from "next/image";
-import useQrString from "@/hooks/useQrString";
 import { MdOutlineQrCodeScanner } from "react-icons/md";
 import toast from "react-hot-toast";
 import TextController from "./TextController";
 import DateController from "./DateController";
-import RadioController from "./RadioController";
 import { FieldValues, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AdharSchema } from "@/utils/schema";
 import { GenderRadio } from "@/utils/constants";
+import SelectInput from "./SelectInput";
+import QrString from "@/hooks/QrString";
+import { DecodeAdharQr } from "@/utils/decodeAdhar";
 
 const QrReader = () => {
 	const {
@@ -44,20 +45,41 @@ const QrReader = () => {
 	// Result
 	const [scannedResult, setScannedResult] = useState<string>("");
 
-	const { name, address, dob, gender } = useQrString(scannedResult);
+	const [name, setname] = useState("");
+	const [address, setaddress] = useState("");
+	const [dob, setdob] = useState<Date | null>(null);
+	const [gender, setgender] = useState("");
 
 	useEffect(() => {
-		if (name !== null && dob !== null && gender !== null) {
+		if (scannedResult && scannedResult.includes("<?xml")) {
+			const { name, address, dob, gender } = QrString(scannedResult);
+			console.log("dob", dob);
+			setname(name);
+			setaddress(address);
+			setgender(gender);
+			setdob(dob);
+		} else if (
+			scannedResult &&
+			typeof Number(scannedResult.at(0)) === typeof Number
+		) {
+			const { name, address, dob, gender } = DecodeAdharQr(scannedResult);
+			setname(name);
+			setaddress(address);
+			setgender(gender);
+			setdob(dob);
+		}
+	}, [scannedResult]);
+
+	useEffect(() => {
+		if (name && dob && gender) {
 			toast.success("Data Fetched successfully!");
-			const [day, month, year] = dob.split("/");
-			const _dob = new Date(Number(year), Number(month) - 1, Number(day));
 			setValue("name", name, {
 				shouldValidate: true,
 			});
 			setValue("gender", gender, {
 				shouldValidate: true,
 			});
-			setValue("dob", _dob, {
+			setValue("dob", dob, {
 				shouldValidate: true,
 			});
 
@@ -73,7 +95,6 @@ const QrReader = () => {
 		console.log(result);
 		// ✅ Handle success.
 		// 😎 You can do whatever you want with the scanned result.
-		setValue("gender", "F");
 		setScannedResult(result?.data);
 	};
 
@@ -172,8 +193,8 @@ const QrReader = () => {
 					<Image
 						src={QrFrame}
 						alt="Qr Frame"
-						width={256}
-						height={256}
+						width={300}
+						height={300}
 						className="qr-frame"
 					/>
 				</div>
@@ -198,11 +219,12 @@ const QrReader = () => {
 					<p>
 						Gender<span className="text-orange-600">*</span>
 					</p>
-					<RadioController
+
+					<SelectInput
 						name={"gender"}
 						control={control}
-						error={errors.gender?.message}
-						data={GenderRadio}
+						error={errors?.gender?.message}
+						OptionList={GenderRadio}
 					/>
 				</div>
 				<div className="w-full">

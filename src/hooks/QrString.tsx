@@ -1,8 +1,9 @@
-const useQrString = (QrText: string) => {
+const QrString = (QrText: string) => {
 	// Extract values using regular expressions
 	const nameMatch = QrText.match(/name="([^"]+)"/);
 	const genderMatch = QrText.match(/gender="([^"]+)"/);
 	const dobMatch = QrText.match(/dob="([^"]+)"/);
+	const yobMatch = QrText.match(/yob="([^"]+)"/) || "";
 
 	// Extract values using regular expressions
 	const lmMatch = QrText.match(/lm="([^"]+)"/);
@@ -25,10 +26,31 @@ const useQrString = (QrText: string) => {
 	// Assign values to variables
 	const name = nameMatch ? nameMatch[1] : null;
 	const gender = genderMatch ? genderMatch[1] : null;
-	const dob = dobMatch ? dobMatch[1] : null;
+	const dob = dobMatch ? dobMatch[1] : yobMatch[1];
+	console.log("dob", dob);
+	let _dob: Date = new Date();
+	if (dobMatch && dob.includes("/")) {
+		const [day, month, year] = dob.split("/");
+		console.log(Number(year), Number(month) - 1, Number(day));
+		_dob = new Date(Number(year), Number(month) - 1, Number(day));
+		console.log("_dob", _dob);
+	} else if (dobMatch && dob.includes("-")) {
+		const [year, month, day] = dob.split("-");
+		console.log(Number(year), Number(month) - 1, Number(day));
+		_dob = new Date(Number(year), Number(month) - 1, Number(day));
+		console.log("_dob", _dob);
+	} else {
+		_dob = new Date(Number(dob));
+	}
+
 	// Combine into an address string
 	const address = `${lm}, ${vtc}, ${po}, ${subdist}, ${dist}, ${state}, ${pc}`;
-	return { name, gender, dob, address };
+	return {
+		name: name ? name : "",
+		gender: gender ? gender : "",
+		dob: dob ? _dob : null,
+		address: address ? address : "",
+	};
 };
 
-export default useQrString;
+export default QrString;
