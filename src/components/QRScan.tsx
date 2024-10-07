@@ -126,8 +126,18 @@ const QrReader = () => {
 		setScannedResult("");
 	};
 
-	const onSubmit = (data: FieldValues) => {
+	const onSubmit = async (data: FieldValues) => {
 		console.log(data);
+		const response = await fetch("/api/user", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		});
+		if (response.ok) {
+			const res = await response.json();
+		}
 	};
 
 	return (
@@ -169,7 +179,7 @@ const QrReader = () => {
 				</div>
 			</div>
 			<form
-				onSubmit={() => handleSubmit(onSubmit)}
+				onSubmit={handleSubmit(onSubmit)}
 				className="w-full flex flex-col space-y-4 my-4 px-2"
 			>
 				<div className="w-full">
