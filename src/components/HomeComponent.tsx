@@ -35,7 +35,7 @@ const HomeComponent = () => {
 					</DropdownMenu>
 				</div>
 			</div>
-			<div className="w-full flex flex-col space-y-4 p-4 rounded shadow-lg ">
+			<div className="w-full flex flex-col space-y-4 p-4 rounded shadow-sm">
 				<QrReader />
 			</div>
 		</div>

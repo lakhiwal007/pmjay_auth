@@ -33,7 +33,7 @@ const Login = () => {
 			onSubmit={handleSubmit(onSubmit)}
 			className="max-w-[450px] min-h-screen flex flex-col items-center justify-center mx-auto"
 		>
-			<div className="w-full space-y-4 p-4 flex flex-col items-center justify-center mx-auto rounded shadow-lg">
+			<div className="w-full space-y-4 p-4 flex flex-col items-center justify-center mx-auto rounded shadow-sm">
 				<Image src={LOGO} width={200} height={200} alt="logo" />
 				<div className="w-full">
 					<p>
@@ -64,7 +64,7 @@ const Login = () => {
 				<div className="w-full flex items-center">
 					<button
 						type="submit"
-						className="bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
+						className="w-full  tracking-wider bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
 					>
 						Login
 					</button>

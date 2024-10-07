@@ -79,7 +79,7 @@ const DashboardComponent = () => {
 			</p> */}
 			<div className="w-full flex shadow-sm rounded px-2 py-4 justify-between items-center">
 				<Image src={LOGO} width={100} height={100} alt="logo" />
-				<div className="flex items-center space-x-2">
+				<div className="relative flex items-center space-x-2">
 					<p className="font-bold truncate max-w-24">Username</p>
 
 					<DropdownMenu>

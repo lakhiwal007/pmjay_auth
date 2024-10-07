@@ -231,13 +231,13 @@ const QrReader = () => {
 					<button
 						type="button"
 						onClick={handleClose}
-						className="bg-slate-200 shadow-md px-4 py-2 rounded border-[1px]  active:shadow-none"
+						className="w-full bg-slate-200 shadow-md px-4 py-2 rounded border-[1px]  active:shadow-none"
 					>
 						Reset
 					</button>
 					<button
 						type="submit"
-						className="bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
+						className="w-full bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
 					>
 						Submit
 					</button>
