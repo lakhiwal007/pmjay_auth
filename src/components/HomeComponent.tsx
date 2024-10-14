@@ -12,7 +12,6 @@ import LOGO from "@/public/icons/pmjay_logo-512.png";
 import QrReader from "./QRScan";
 import Image from "next/image";
 import { MdArrowDropDown, MdPerson } from "react-icons/md";
-
 const HomeComponent = () => {
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">
@@ -37,6 +36,8 @@ const HomeComponent = () => {
 				</div>
 			</div>
 			<div className="w-full flex flex-col space-y-4 p-4 rounded shadow-sm">
+				
+
 				<QrReader />
 			</div>
 		</div>
