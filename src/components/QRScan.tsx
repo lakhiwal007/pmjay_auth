@@ -54,7 +54,7 @@ const QrReader = () => {
 	useEffect(() => {
 		if (scannedResult && scannedResult.includes("<?xml")) {
 			const { name, address, dob, gender } = QrString(scannedResult);
-			console.log("dob", dob);
+
 			setname(name);
 			setaddress(address);
 			setgender(gender);
@@ -142,7 +142,7 @@ const QrReader = () => {
 	// 	}
 	// };
 
-	const handleScan = (result: any) => {
+	const handleScan = () => {
 		setShowVideo(true);
 	};
 
@@ -168,7 +168,7 @@ const QrReader = () => {
 	};
 
 	return (
-		<div className="qr-reader w-full ">
+		<div className="w-full">
 			{/* QR */}
 			<div className="w-full flex space-x-4">
 				<button
@@ -190,23 +190,36 @@ const QrReader = () => {
 				)}
 			</div>
 			{showVideo && (
-				<div className="w-full rounded my-4">
+				<div className="w-full relative rounded my-4">
 					<Scanner
 						components={{
-							onOff: true,
 							torch: true,
 							zoom: true,
 							finder: true,
 						}}
 						formats={[
-							"qr_code",
-							"micro_qr_code",
-							"rm_qr_code",
-							"maxi_code",
-							"pdf417",
 							"aztec",
+							"code_128",
+							"code_39",
+							"code_93",
+							"codabar",
+							"databar",
+							"databar_expanded",
 							"data_matrix",
+							"dx_film_edge",
+							"ean_13",
+							"ean_8",
+							"itf",
+							"maxi_code",
+							"micro_qr_code",
+							"pdf417",
+							"qr_code",
+							"rm_qr_code",
+							"upc_a",
+							"upc_e",
+							"linear_codes",
 							"matrix_codes",
+							"unknown",
 						]}
 						onScan={(result) => {
 							setScannedResult(result[0]?.rawValue || "");
@@ -232,9 +245,9 @@ const QrReader = () => {
 			</div> */}
 			<form
 				onSubmit={handleSubmit(onSubmit)}
-				className="w-full flex flex-col space-y-4 my-4 px-2"
+				className="w-full relative flex flex-col space-y-4 my-4 px-2"
 			>
-				<div className="w-full">
+				<div className="w-full relative">
 					<p>
 						Name
 						<span className="text-orange-600">*</span>
