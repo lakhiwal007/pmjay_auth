@@ -88,6 +88,7 @@ const QrReader = () => {
 			setValue("address", address, {
 				shouldValidate: true,
 			});
+			setShowVideo(false);
 		}
 	}, [name, address, dob, gender, setValue]);
 

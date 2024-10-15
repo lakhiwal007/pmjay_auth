@@ -27,21 +27,20 @@ const QrString = (QrText: string) => {
 	const name = nameMatch ? nameMatch[1] : null;
 	const gender = genderMatch ? genderMatch[1] : null;
 	const dob = dobMatch ? dobMatch[1] : yobMatch[1];
-	console.log("dob", dob);
+
 	let _dob: Date = new Date();
 	if (dobMatch && dob.includes("/")) {
 		const [day, month, year] = dob.split("/");
 		console.log(Number(year), Number(month) - 1, Number(day));
 		_dob = new Date(Number(year), Number(month) - 1, Number(day));
-		console.log("_dob", _dob);
 	} else if (dobMatch && dob.includes("-")) {
 		const [year, month, day] = dob.split("-");
 		console.log(Number(year), Number(month) - 1, Number(day));
 		_dob = new Date(Number(year), Number(month) - 1, Number(day));
-		console.log("_dob", _dob);
 	} else {
-		_dob = new Date(Number(dob));
+		_dob = new Date(Number(dob), 0, 1);
 	}
+	console.log("_dob", _dob);
 
 	// Combine into an address string
 	const address = `${lm}, ${vtc}, ${po}, ${subdist}, ${dist}, ${state}, ${pc}`;
