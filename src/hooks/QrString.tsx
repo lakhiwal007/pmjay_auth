@@ -40,10 +40,13 @@ const QrString = (QrText: string) => {
 	} else {
 		_dob = new Date(Number(dob), 0, 1);
 	}
-	console.log("_dob", _dob);
 
 	// Combine into an address string
-	const address = `${lm}, ${vtc}, ${po}, ${subdist}, ${dist}, ${state}, ${pc}`;
+	let address = `${lm}, ${vtc}, ${po}, ${subdist}, ${dist}, ${state}, ${pc}`;
+	if (address[0] === ",") {
+		const addrs = address.split(", ").splice(1).join(",");
+		address = addrs;
+	}
 	return {
 		name: name ? name : "",
 		gender: gender ? gender : "",
