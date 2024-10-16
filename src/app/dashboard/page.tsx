@@ -1,3 +1,4 @@
+"use client";
 import DashboardComponent from "@/components/Dashboard";
 import React from "react";
 

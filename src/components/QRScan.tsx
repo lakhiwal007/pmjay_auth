@@ -1,13 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-// Styles
-import "./QrStyles.css";
-
-// Qr Scanner
-import QrScanner from "qr-scanner";
-import QrFrame from "@/public/qr-frame.svg";
-import Image from "next/image";
 import { MdOutlineQrCodeScanner } from "react-icons/md";
 import toast from "react-hot-toast";
 import TextController from "./TextController";
@@ -20,6 +13,7 @@ import SelectInput from "./SelectInput";
 import QrString from "@/hooks/QrString";
 import { DecodeAdharQr } from "@/utils/decodeAdhar";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import { useRouter } from "next/navigation";
 
 const QrReader = () => {
 	const {
@@ -36,15 +30,12 @@ const QrReader = () => {
 		resolver: yupResolver(AdharSchema),
 	});
 
-	// QR States
-	const scanner = useRef<QrScanner>();
-	const videoEl = useRef<HTMLVideoElement>(null);
-	const qrBoxEl = useRef<HTMLDivElement>(null);
-	const [qrOn, setQrOn] = useState<boolean>(true);
 	const [showVideo, setShowVideo] = useState<boolean>(false);
 
 	// Result
 	const [scannedResult, setScannedResult] = useState<string>("");
+
+	const router = useRouter();
 
 	const [name, setname] = useState("");
 	const [address, setaddress] = useState("");
@@ -97,24 +88,17 @@ const QrReader = () => {
 	};
 
 	const handleClose = () => {
-		scanner.current?.stop();
 		setShowVideo(false);
 		reset();
 		setScannedResult("");
 	};
 
 	const onSubmit = async (data: FieldValues) => {
-		console.log(data);
-		const response = await fetch("/api/user", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(data),
-		});
-		if (response.ok) {
-			const res = await response.json();
-		}
+		const NotSyncedDataString = localStorage.getItem("notSyncedData") || "";
+		const NotSyncedData = JSON.parse(NotSyncedDataString);
+		const newData = [...NotSyncedData, data];
+		localStorage.setItem("notSyncedData", JSON.stringify(newData));
+		router.back();
 	};
 
 	return (
@@ -142,6 +126,12 @@ const QrReader = () => {
 			{showVideo && (
 				<div className="w-full relative rounded my-4">
 					<Scanner
+						styles={{
+							container: {
+								width: "350px",
+								height: "350px",
+							},
+						}}
 						components={{
 							torch: true,
 							zoom: true,
@@ -177,22 +167,7 @@ const QrReader = () => {
 					/>
 				</div>
 			)}
-			{/* <div
-				className={`w-full h-[50vh] mt-4 rounded shadow-lg border-2 border-gray-500 ${
-					showVideo ? "flex" : "hidden"
-				}`}
-			>
-				<video ref={videoEl}></video>
-				<div ref={qrBoxEl} className="qr-box">
-					<Image
-						src={QrFrame}
-						alt="Qr Frame"
-						width={300}
-						height={300}
-						className="qr-frame"
-					/>
-				</div>
-			</div> */}
+
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className="w-full relative flex flex-col space-y-4 my-4 px-2"

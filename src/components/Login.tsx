@@ -6,7 +6,8 @@ import { LoginSchema } from "@/utils/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import LOGO from "@/public/icons/pmjay_logo-512.png";
+import LOGO from "../../public/icons/pmjay_logo-512.png";
+import { ADHAR_TYPE } from "@/utils/types";
 
 const Login = () => {
 	const {
@@ -23,6 +24,16 @@ const Login = () => {
 	if (isLoggedIn) {
 		router.replace("/dashboard");
 	}
+
+	useEffect(() => {
+		const NotSyncedData: ADHAR_TYPE[] = [];
+		if (localStorage.getItem("notSyncedData") === null) {
+			localStorage.setItem(
+				"notSyncedData",
+				JSON.stringify(NotSyncedData)
+			);
+		}
+	}, []);
 
 	const onSubmit = (data: FieldValues) => {
 		window.navigator.vibrate(200);
