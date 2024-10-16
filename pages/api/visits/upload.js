@@ -10,6 +10,11 @@ const prisma = new PrismaClient();
 export const config = {
     api: {
       bodyParser: false,
+      logging: {
+        fetches: {
+          fullUrl: true,
+        },
+    },
     }
   };
   
