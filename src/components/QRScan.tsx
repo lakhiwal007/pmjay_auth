@@ -126,7 +126,7 @@ const QrReader = () => {
 				)}
 			</div>
 			{showVideo && (
-				<div className="w-full relative rounded my-4 mx-auto">
+				<div className="w-full relative rounded flex items-center justify-center my-4 mx-auto">
 					<Scanner
 						styles={{
 							container: {

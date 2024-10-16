@@ -11,29 +11,10 @@ import { useRouter } from "next/navigation";
 import { ADHAR_TYPE } from "@/utils/types";
 import Header from "./Header";
 
-// const checkOnlineStatus = async () => {
-// 	try {
-// 		const online = await fetch("/api/user");
-// 		return online.status >= 200 && online.status < 300; // either true or false
-// 	} catch (err) {
-// 		return false;
-// 	}
-// };
-
 const DashboardComponent = () => {
 	const router = useRouter();
 	const [NotSyncedData, setNotSyncedData] = useState<ADHAR_TYPE[]>([]);
 	const [NotSyncCount, setNotSyncCount] = useState(0);
-	const [NetworkStatus, setNetworkStatus] = useState("Offline");
-
-	// const handleSync = async () => {
-	// 	const result = await checkOnlineStatus();
-	// 	setNetworkStatus(result ? "Online" : "Offline");
-	// };
-
-	// useEffect(() => {
-	// 	handleSync();
-	// }, []);
 
 	useEffect(() => {
 		const dataString = localStorage.getItem("notSyncedData") || "";
@@ -41,13 +22,6 @@ const DashboardComponent = () => {
 		setNotSyncCount(data.length);
 		setNotSyncedData(data);
 	}, []);
-
-	// useEffect(() => {
-	// 	setInterval(async () => {
-	// 		const result = await checkOnlineStatus();
-	// 		setNetworkStatus(result ? "Online" : "Offline");
-	// 	}, 30000);
-	// }, []);
 
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">
@@ -105,27 +79,31 @@ const DashboardComponent = () => {
 
 				{NotSyncCount > 0 ? (
 					<table className="w-full mt-4 shadow-lg rounded">
-						<tr className="w-full grid grid-cols-[1fr,70px,100px,1fr] gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
-							<th className="text-left">Name</th>
-							<th>Gender</th>
-							<th>DOB</th>
-							<th>Address</th>
-						</tr>
-						{NotSyncedData.map((e, index) => (
-							<tr
-								key={index}
-								className="w-full grid grid-cols-[1fr,70px,100px,1fr] gap-2 px-2 py-4 rounded odd:bg-slate-100 divide-x-[1px] text-center"
-							>
-								<td className="truncate text-left">{e.name}</td>
-								<td className="truncate">{e.gender}</td>
-								<td className="truncate">
-									{new Date(e.dob).toLocaleDateString()}{" "}
-								</td>
-								<td className="truncate text-left pl-4">
-									{e.address}
-								</td>
+						<tbody>
+							<tr className="w-full grid grid-cols-[1fr,70px,100px,1fr] gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
+								<th className="text-left">Name</th>
+								<th>Gender</th>
+								<th>DOB</th>
+								<th>Address</th>
 							</tr>
-						))}
+							{NotSyncedData.map((e, index) => (
+								<tr
+									key={index}
+									className="w-full grid grid-cols-[1fr,70px,100px,1fr] gap-2 px-2 py-4 rounded odd:bg-slate-100 divide-x-[1px] text-center"
+								>
+									<td className="truncate text-left">
+										{e.name}
+									</td>
+									<td className="truncate">{e.gender}</td>
+									<td className="truncate">
+										{new Date(e.dob).toLocaleDateString()}{" "}
+									</td>
+									<td className="truncate text-left pl-4">
+										{e.address}
+									</td>
+								</tr>
+							))}
+						</tbody>
 					</table>
 				) : (
 					""

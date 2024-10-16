@@ -1,5 +1,5 @@
 import React from "react";
-import { MdArrowDropDown, MdPerson } from "react-icons/md";
+import { MdArrowDropDown, MdPerson, MdWifi, MdWifiOff } from "react-icons/md";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -12,14 +12,26 @@ import {
 import LOGO from "../../public/icons/pmjay_logo-512.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useNetworkConnectivity } from "@/hooks/useNetworkConnectivity";
 
 const Header = () => {
 	const router = useRouter();
+	const isConnected = useNetworkConnectivity({});
+	console.log("isConnected: ", isConnected);
 	return (
 		<div className="w-full flex shadow-sm rounded px-2 py-4 justify-between items-center">
 			<Image src={LOGO} width={100} height={100} alt="logo" />
 			<div className="relative flex items-center space-x-2">
-				<p className="font-bold truncate max-w-24">Username</p>
+				<div className="relative flex">
+					<p className="font-bold truncate max-w-24">Username</p>
+					<p
+						className={`w-4 h-4 p-[2px] rounded-full shadow-lg flex items-center justify-center text-white ${
+							isConnected ? "bg-green-600" : "bg-red-700"
+						}`}
+					>
+						{isConnected ? <MdWifi /> : <MdWifiOff />}
+					</p>
+				</div>
 
 				<DropdownMenu>
 					<DropdownMenuTrigger>
