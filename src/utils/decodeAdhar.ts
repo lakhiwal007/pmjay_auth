@@ -1,10 +1,27 @@
+import toast from "react-hot-toast";
+
 var pako = require("pako");
 export const DecodeAdharQr = (qrcode: string) => {
-	console.log("qrcode", qrcode);
+	// console.log("qrcode", qrcode);
+
+	// Check if the qrcode is a large numeric string
+	const isNumeric = /^\d+$/.test(qrcode);
+
+	if (!isNumeric) {
+		toast.error("Invalid QR code format", {
+			position: "bottom-center",
+		});
+		return { name: "", gender: "", dob: null, address: "" };
+	}
 
 	// Step 1: Convert the Base-10 value into a Big Integer (in JS, this is a BigInt)
-	const base10Value = BigInt(qrcode);
-
+	let base10Value: bigint;
+	try {
+		base10Value = BigInt(qrcode);
+	} catch (error) {
+		console.error("Failed to convert QR code to BigInt:", error);
+		return { name: "", gender: "", dob: null, address: "" };
+	}
 	// Step 2: Convert the Big Integer into a byte array
 	const byteArray = BigIntToByteArray(base10Value);
 
@@ -27,17 +44,19 @@ export const DecodeAdharQr = (qrcode: string) => {
 	let decompressedBytes: Uint8Array;
 	try {
 		decompressedBytes = pako.inflate(byteArray);
-		console.log("decompressedBytes", decompressedBytes);
+		// console.log("decompressedBytes", decompressedBytes);
 	} catch (error) {
-		console.error("Decompression error:", error);
-		process.exit(1);
+		toast.error("Invalid QR Format", {
+			position: "bottom-center",
+		});
+		return { name: "", gender: "", dob: null, address: "" };
 	}
 
 	// Step 4: Find the first occurrence of delimiter (255) and extract the Email/Mobile Present Indicator
 	const firstDelimiterIndex = decompressedBytes.indexOf(255);
 	if (firstDelimiterIndex === -1) {
 		console.error("Delimiter 255 not found.");
-		process.exit(1);
+		return { name: "", gender: "", dob: null, address: "" };
 	}
 
 	const extractedBytes = decompressedBytes.slice(0, firstDelimiterIndex);
@@ -82,27 +101,47 @@ export const DecodeAdharQr = (qrcode: string) => {
 		"SubDistrict",
 	];
 
+	// console.log("fields", fields);
+
 	for (let i = 0; i < adharKey.length; i++) {
 		const key = adharKey[i];
-		AdharJson[key] = fields[i];
+		if (fields[0].length === 1) {
+			AdharJson[key] = fields[i + 1];
+		} else {
+			AdharJson[key] = fields[i];
+		}
 	}
 
 	const name = AdharJson["name"];
 	const gender = AdharJson["gender"];
 	const dob = AdharJson["dob"];
-	const address =
-		AdharJson["house"] +
-		AdharJson["location"] +
-		AdharJson["landmark"] +
-		AdharJson["Street"] +
-		AdharJson["postOffice"] +
-		AdharJson["SubDistrict"] +
-		AdharJson["district"] +
-		AdharJson["State"] +
-		AdharJson["pinCode"];
 
-	const [year, month, day] = dob.split("-");
-	const _dob = new Date(Number(year), Number(month) - 1, Number(day));
+	const address = [
+		AdharJson["house"],
+		AdharJson["location"],
+		AdharJson["landmark"],
+		AdharJson["Street"],
+		AdharJson["postOffice"],
+		AdharJson["SubDistrict"],
+		AdharJson["district"],
+		AdharJson["State"],
+		AdharJson["pinCode"],
+	]
+		.filter(Boolean)
+		.join(", ");
+
+	let _dob: Date = new Date();
+	if (dob && dob.includes("/")) {
+		const [day, month, year] = dob.split("/");
+		// console.log(Number(year), Number(month) - 1, Number(day));
+		_dob = new Date(Number(year), Number(month) - 1, Number(day));
+	} else if (dob && dob.includes("-")) {
+		const [day, month, year] = dob.split("-");
+		// console.log(Number(year), Number(month) - 1, Number(day));
+		_dob = new Date(Number(year), Number(month) - 1, Number(day));
+	} else {
+		_dob = new Date(Number(dob), 0, 1);
+	}
 
 	return { name, gender, dob: _dob, address };
 };

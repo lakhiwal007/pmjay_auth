@@ -36,7 +36,7 @@ const Login = () => {
 	}, []);
 
 	const onSubmit = (data: FieldValues) => {
-		window.navigator.vibrate(200);
+		// window.navigator.vibrate(200);
 		console.log(data);
 		router.push("/dashboard");
 	};

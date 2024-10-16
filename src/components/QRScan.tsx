@@ -50,10 +50,7 @@ const QrReader = () => {
 			setaddress(address);
 			setgender(gender);
 			setdob(dob);
-		} else if (
-			scannedResult &&
-			typeof Number(scannedResult.at(0)) === typeof Number
-		) {
+		} else if (scannedResult) {
 			const { name, address, dob, gender } = DecodeAdharQr(scannedResult);
 			setname(name);
 			setaddress(address);
@@ -67,7 +64,7 @@ const QrReader = () => {
 			toast.success("Data Fetched successfully!", {
 				position: "bottom-center",
 			});
-			window.navigator.vibrate(200);
+			// window.navigator.vibrate(200);
 			setValue("name", name, {
 				shouldValidate: true,
 			});
@@ -96,6 +93,7 @@ const QrReader = () => {
 	};
 
 	const onSubmit = async (data: FieldValues) => {
+		// window.navigator.vibrate(200);
 		const NotSyncedDataString = localStorage.getItem("notSyncedData") || "";
 		const NotSyncedData = JSON.parse(NotSyncedDataString);
 		const newData = [...NotSyncedData, data];
@@ -139,30 +137,7 @@ const QrReader = () => {
 							zoom: true,
 							finder: true,
 						}}
-						formats={[
-							"aztec",
-							"code_128",
-							"code_39",
-							"code_93",
-							"codabar",
-							"databar",
-							"databar_expanded",
-							"data_matrix",
-							"dx_film_edge",
-							"ean_13",
-							"ean_8",
-							"itf",
-							"maxi_code",
-							"micro_qr_code",
-							"pdf417",
-							"qr_code",
-							"rm_qr_code",
-							"upc_a",
-							"upc_e",
-							"linear_codes",
-							"matrix_codes",
-							"unknown",
-						]}
+						formats={["qr_code", "rm_qr_code"]}
 						onScan={(result) => {
 							setScannedResult(result[0]?.rawValue || "");
 						}}

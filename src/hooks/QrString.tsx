@@ -31,18 +31,28 @@ const QrString = (QrText: string) => {
 	let _dob: Date = new Date();
 	if (dobMatch && dob.includes("/")) {
 		const [day, month, year] = dob.split("/");
-		console.log(Number(year), Number(month) - 1, Number(day));
+		// console.log(Number(year), Number(month) - 1, Number(day));
 		_dob = new Date(Number(year), Number(month) - 1, Number(day));
 	} else if (dobMatch && dob.includes("-")) {
 		const [year, month, day] = dob.split("-");
-		console.log(Number(year), Number(month) - 1, Number(day));
+		// console.log(Number(year), Number(month) - 1, Number(day));
 		_dob = new Date(Number(year), Number(month) - 1, Number(day));
 	} else {
 		_dob = new Date(Number(dob), 0, 1);
 	}
 
 	// Combine into an address string
-	let address = `${lm}, ${vtc}, ${po}, ${subdist}, ${dist}, ${state}, ${pc}`;
+	let address = [
+		lm, // landmark
+		vtc, // village/town/city
+		po, // post office
+		subdist, // sub-district
+		dist, // district
+		state, // state
+		pc, // postal code
+	]
+		.filter(Boolean) // Filters out any falsy values (e.g., empty strings, null, undefined)
+		.join(", ");
 	if (address[0] === ",") {
 		const addrs = address.split(", ").splice(1).join(",");
 		address = addrs;
