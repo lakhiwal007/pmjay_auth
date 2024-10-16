@@ -217,7 +217,7 @@ const QrReader = () => {
 						name="address"
 						control={control}
 						error={errors.address?.message}
-						maxLength={50}
+						maxLength={250}
 					/>
 				</div>
 				<div className="w-full flex items-center space-x-4">

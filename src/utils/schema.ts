@@ -1,5 +1,5 @@
 import * as yup from "yup";
-const TEXT_REG = /^[a-zA-Z0-9.,'() \-_/&]*$/;
+const TEXT_REG = /^[a-zA-Z0-9.,'() \-_/&?]*$/;
 const TEXT_MSG = "Allowed special charcters are (),-_/.'&";
 
 const TextYup = ({ len, msg }: { len: number; msg: string }) =>
