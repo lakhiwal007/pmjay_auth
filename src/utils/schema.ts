@@ -23,5 +23,8 @@ export const AdharSchema = yup.object().shape({
 
 export const LoginSchema = yup.object().shape({
 	username: TextYup({ len: 6, msg: "Min 6 characters allowed" }),
-	password: TextYup({ len: 6, msg: "Min 6 characters allowed" }),
+	password: yup
+		.string()
+		.required("Required*")
+		.min(6, "Minimum 6 characters allowed*"),
 });

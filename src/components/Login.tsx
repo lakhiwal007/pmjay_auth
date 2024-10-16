@@ -7,7 +7,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import LOGO from "../../public/icons/pmjay_logo-512.png";
-import { ADHAR_TYPE } from "@/utils/types";
+import { ADHAR_TYPE, LoginType } from "@/utils/types";
+import toast from "react-hot-toast";
+import bcrypt from "bcryptjs";
 
 const Login = () => {
 	const {
@@ -16,6 +18,10 @@ const Login = () => {
 		formState: { errors },
 	} = useForm({
 		mode: "all",
+		defaultValues: {
+			username: "",
+			password: "",
+		},
 		resolver: yupResolver(LoginSchema),
 	});
 	const router = useRouter();
@@ -35,10 +41,30 @@ const Login = () => {
 		}
 	}, []);
 
-	const onSubmit = (data: FieldValues) => {
+	const onSubmit = async (data: LoginType) => {
 		// window.navigator.vibrate(200);
-		console.log(data);
-		router.push("/dashboard");
+
+		try {
+			const response = await fetch("/api/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+			const res = await response.json();
+			if (response.ok) {
+				// console.log("res:", res);
+				localStorage.setItem("userId", res.user.id);
+				localStorage.setItem("username", res.user.username);
+				toast.success(res.message);
+				router.push("/dashboard");
+			} else {
+				toast.error(res.message);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	return (
 		<form

@@ -96,7 +96,7 @@ const QrReader = () => {
 		// window.navigator.vibrate(200);
 		const NotSyncedDataString = localStorage.getItem("notSyncedData") || "";
 		const NotSyncedData = JSON.parse(NotSyncedDataString);
-		const newData = [...NotSyncedData, data];
+		const newData = [data, ...NotSyncedData];
 		localStorage.setItem("notSyncedData", JSON.stringify(newData));
 		router.back();
 	};

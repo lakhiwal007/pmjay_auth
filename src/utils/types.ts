@@ -4,3 +4,8 @@ export type ADHAR_TYPE = {
 	dob: Date;
 	gender: string;
 };
+
+export type LoginType = {
+	username: string;
+	password: string;
+};

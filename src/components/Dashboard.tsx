@@ -13,8 +13,18 @@ import Header from "./Header";
 
 const DashboardComponent = () => {
 	const router = useRouter();
+	const [username, setUsername] = useState("");
 	const [NotSyncedData, setNotSyncedData] = useState<ADHAR_TYPE[]>([]);
 	const [NotSyncCount, setNotSyncCount] = useState(0);
+
+	useEffect(() => {
+		const userId = localStorage.getItem("userId") || "";
+		if (!userId) {
+			router.replace("/");
+		}
+		const UserName = localStorage.getItem("username") || "";
+		setUsername(UserName);
+	}, [router]);
 
 	useEffect(() => {
 		const dataString = localStorage.getItem("notSyncedData") || "";
@@ -26,7 +36,7 @@ const DashboardComponent = () => {
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">
 			<div className="w-full px-2">
-				<Header />
+				<Header username={username} />
 				<div className="w-full py-4 flex items-center space-x-4">
 					<button
 						onClick={() => router.push("/scan")}
@@ -39,7 +49,7 @@ const DashboardComponent = () => {
 				<div className="w-full grid grid-cols-2 gap-4">
 					<button
 						type="button"
-						className="w-full bg-blue-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-blue-100 flex flex-col active:shadow-lg cursor-pointer"
+						className="w-full bg-blue-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-blue-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
 					>
 						<FaFileLines className="w-12 h-12 absolute right-2 top-auto text-blue-700" />
 						<p>E KYC</p>
@@ -48,7 +58,7 @@ const DashboardComponent = () => {
 					<button
 						type="button"
 						// onClick={handleSync}
-						className="w-full bg-gray-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-gray-100 active:shadow-lg cursor-pointer flex flex-col"
+						className="w-full bg-gray-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-gray-100 active:shadow-lg cursor-pointer flex flex-col items-start justify-start"
 					>
 						<MdOutlinePendingActions className="w-12 h-12 absolute right-2 top-auto text-gray-700" />
 						<p>Not Synced</p>
@@ -61,7 +71,7 @@ const DashboardComponent = () => {
 					</button>
 					<button
 						type="button"
-						className="w-full bg-green-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-green-100 flex flex-col active:shadow-lg cursor-pointer"
+						className="w-full bg-green-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-green-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
 					>
 						<FaFileCircleCheck className="w-12 h-12 absolute right-2 top-auto text-green-700" />
 						<p>Accepted</p>
@@ -69,7 +79,7 @@ const DashboardComponent = () => {
 					</button>
 					<button
 						type="button"
-						className="w-full bg-red-50  relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-red-100 flex flex-col active:shadow-lg cursor-pointer"
+						className="w-full bg-red-50  relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-red-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
 					>
 						<FaFileCircleXmark className="w-12 h-12 absolute right-2 top-auto text-red-700" />
 						<p>Rejected</p>
