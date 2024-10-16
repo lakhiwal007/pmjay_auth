@@ -64,7 +64,9 @@ const QrReader = () => {
 
 	useEffect(() => {
 		if (name && dob && gender) {
-			toast.success("Data Fetched successfully!");
+			toast.success("Data Fetched successfully!", {
+				position: "bottom-center",
+			});
 			window.navigator.vibrate(200);
 			setValue("name", name, {
 				shouldValidate: true,
@@ -124,7 +126,7 @@ const QrReader = () => {
 				)}
 			</div>
 			{showVideo && (
-				<div className="w-full relative rounded my-4">
+				<div className="w-full relative rounded my-4 mx-auto">
 					<Scanner
 						styles={{
 							container: {
