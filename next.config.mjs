@@ -9,7 +9,20 @@ const nextConfig = {
 };
 
 export default withPWA({
-	cacheOnFrontEndNav: true,
+	api: {
+		bodyParser: false, // Disable the default body parser for API routes
+		logging: {
+			fetches: {
+			  fullUrl: true, // Log full URLs for fetch requests
+			},
+		},	
+	  },
+	logging: {
+		fetches: {
+		  fullUrl: true, // Log full URLs for fetch requests
+		},
+	},
+		cacheOnFrontEndNav: true,
 	aggressiveFrontEndNavCaching: true,
 	reloadOnOnline: true,
 	cacheStartUrl: true,
