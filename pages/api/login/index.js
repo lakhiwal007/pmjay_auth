@@ -6,6 +6,7 @@ import cors from "../lib/cors-middleware";
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
+    console.log(req.method)
 	await cors(req, res);
 
 	if (req.method !== "POST") {
