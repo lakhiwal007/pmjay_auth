@@ -21,24 +21,30 @@ const Header = ({ username }: Props) => {
 	const isConnected = useNetworkConnectivity({});
 
 	return (
-		<div className="w-full flex shadow-sm rounded px-2 py-4 justify-between items-center">
-			<Image src={LOGO} width={100} height={100} alt="logo" />
-			<div className="relative flex items-center space-x-2">
-				<div className="relative flex">
-					<p className="font-bold truncate max-w-24">{username}</p>
-					<p
-						className={`w-4 h-4 p-[2px] rounded-full shadow-lg flex items-center justify-center text-white ${
-							isConnected ? "bg-green-600" : "bg-red-700"
-						}`}
-					>
-						{isConnected ? <MdWifi /> : <MdWifiOff />}
-					</p>
-				</div>
+		<div className="w-full flex shadow-sm rounded p-2 justify-between items-center">
+			<div>
+				<Image
+					src={LOGO}
+					width={120}
+					height={120}
+					className="rounded-full shadow-sm"
+					alt="logo"
+				/>
+			</div>
+			<div className="w-full relative flex items-center justify-end space-x-2">
+				<p className="font-bold truncate max-w-24">{username}</p>
 
 				<DropdownMenu>
 					<DropdownMenuTrigger>
-						<div className="flex items-center">
+						<div className=" relative flex items-center">
 							<MdPerson className="w-8 h-8" />
+							<p
+								className={`w-4 h-4 p-[2px] absolute right-3 -top-2 rounded-full shadow-lg flex items-center justify-center text-white ${
+									isConnected ? "bg-green-600" : "bg-red-700"
+								}`}
+							>
+								{isConnected ? <MdWifi /> : <MdWifiOff />}
+							</p>
 							<MdArrowDropDown />
 						</div>
 					</DropdownMenuTrigger>

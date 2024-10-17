@@ -1,5 +1,6 @@
 const QrString = (QrText: string) => {
 	// Extract values using regular expressions
+	const uidMatch = QrText.match(/uid="([^"]+)"/);
 	const nameMatch = QrText.match(/name="([^"]+)"/);
 	const genderMatch = QrText.match(/gender="([^"]+)"/);
 	const dobMatch = QrText.match(/dob="([^"]+)"/);
@@ -24,6 +25,7 @@ const QrString = (QrText: string) => {
 	const pc = pcMatch ? pcMatch[1] : "";
 
 	// Assign values to variables
+	const uid = uidMatch ? uidMatch[1] : null;
 	const name = nameMatch ? nameMatch[1] : null;
 	const gender = genderMatch ? genderMatch[1] : null;
 	const dob = dobMatch ? dobMatch[1] : yobMatch[1];
@@ -58,6 +60,7 @@ const QrString = (QrText: string) => {
 		address = addrs;
 	}
 	return {
+		uid: uid ? uid : "",
 		name: name ? name : "",
 		gender: gender ? gender : "",
 		dob: dob ? _dob : null,

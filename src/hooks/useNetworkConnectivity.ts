@@ -22,6 +22,7 @@ export const useNetworkConnectivity = ({ options = {} }: Props) => {
 		getNetworkConnectivitySnapshot,
 		getNetworkConnectivityServerSnapshot
 	);
+
 	useEffect(() => {
 		if (isOnline) {
 			options.onOnline && options.onOnline(true);

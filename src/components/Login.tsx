@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { FieldValues, useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 import TextController from "./TextController";
 import { LoginSchema } from "@/utils/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,7 +9,6 @@ import Image from "next/image";
 import LOGO from "../../public/icons/pmjay_logo-512.png";
 import { ADHAR_TYPE, LoginType } from "@/utils/types";
 import toast from "react-hot-toast";
-import bcrypt from "bcryptjs";
 
 const Login = () => {
 	const {
@@ -25,11 +24,13 @@ const Login = () => {
 		resolver: yupResolver(LoginSchema),
 	});
 	const router = useRouter();
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	if (isLoggedIn) {
-		router.replace("/dashboard");
-	}
+	useEffect(() => {
+		const userId = localStorage.getItem("userId") || "";
+		if (userId) {
+			router.replace("/dashboard");
+		}
+	}, [router]);
 
 	useEffect(() => {
 		const NotSyncedData: ADHAR_TYPE[] = [];
@@ -74,7 +75,7 @@ const Login = () => {
 			<div className="w-full space-y-4 p-4 flex flex-col items-center justify-center mx-auto rounded shadow-sm">
 				<Image src={LOGO} width={200} height={200} alt="logo" />
 				<div className="w-full">
-					<p>
+					<p className="font-semibold">
 						Username
 						<span className="text-orange-600">*</span>
 					</p>
@@ -87,7 +88,7 @@ const Login = () => {
 				</div>
 
 				<div className="w-full">
-					<p>
+					<p className="font-semibold">
 						Password
 						<span className="text-orange-600">*</span>
 					</p>

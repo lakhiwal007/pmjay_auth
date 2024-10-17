@@ -11,7 +11,7 @@ export const DecodeAdharQr = (qrcode: string) => {
 		toast.error("Invalid QR code format", {
 			position: "bottom-center",
 		});
-		return { name: "", gender: "", dob: null, address: "" };
+		return { refId: "", name: "", gender: "", dob: null, address: "" };
 	}
 
 	// Step 1: Convert the Base-10 value into a Big Integer (in JS, this is a BigInt)
@@ -20,7 +20,7 @@ export const DecodeAdharQr = (qrcode: string) => {
 		base10Value = BigInt(qrcode);
 	} catch (error) {
 		console.error("Failed to convert QR code to BigInt:", error);
-		return { name: "", gender: "", dob: null, address: "" };
+		return { refId: "", name: "", gender: "", dob: null, address: "" };
 	}
 	// Step 2: Convert the Big Integer into a byte array
 	const byteArray = BigIntToByteArray(base10Value);
@@ -49,14 +49,14 @@ export const DecodeAdharQr = (qrcode: string) => {
 		toast.error("Invalid QR Format", {
 			position: "bottom-center",
 		});
-		return { name: "", gender: "", dob: null, address: "" };
+		return { refId: "", name: "", gender: "", dob: null, address: "" };
 	}
 
 	// Step 4: Find the first occurrence of delimiter (255) and extract the Email/Mobile Present Indicator
 	const firstDelimiterIndex = decompressedBytes.indexOf(255);
 	if (firstDelimiterIndex === -1) {
 		console.error("Delimiter 255 not found.");
-		return { name: "", gender: "", dob: null, address: "" };
+		return { refId: "", name: "", gender: "", dob: null, address: "" };
 	}
 
 	const extractedBytes = decompressedBytes.slice(0, firstDelimiterIndex);
@@ -112,6 +112,8 @@ export const DecodeAdharQr = (qrcode: string) => {
 		}
 	}
 
+	const refId = AdharJson["referenceId"];
+
 	const name = AdharJson["name"];
 	const gender = AdharJson["gender"];
 	const dob = AdharJson["dob"];
@@ -143,5 +145,5 @@ export const DecodeAdharQr = (qrcode: string) => {
 		_dob = new Date(Number(dob), 0, 1);
 	}
 
-	return { name, gender, dob: _dob, address };
+	return { refId, name, gender, dob: _dob, address };
 };
