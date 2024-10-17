@@ -73,7 +73,15 @@ const Login = () => {
 			className="max-w-[450px] min-h-screen flex flex-col items-center justify-center mx-auto"
 		>
 			<div className="w-full space-y-4 p-4 flex flex-col items-center justify-center mx-auto rounded shadow-sm">
-				<Image src={LOGO} width={200} height={200} alt="logo" />
+				<div>
+					<Image
+						src={LOGO}
+						width={200}
+						height={200}
+						className="rounded-full shadow-md"
+						alt="logo"
+					/>
+				</div>
 				<div className="w-full">
 					<p className="font-semibold">
 						Username
