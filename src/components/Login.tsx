@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import TextController from "./TextController";
 import { LoginSchema } from "@/utils/schema";
@@ -9,12 +9,13 @@ import Image from "next/image";
 import LOGO from "../../public/icons/pmjay_logo-512.png";
 import { ADHAR_TYPE, LoginType } from "@/utils/types";
 import toast from "react-hot-toast";
+import Loader from "./Loader";
 
 const Login = () => {
 	const {
 		control,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 	} = useForm({
 		mode: "all",
 		defaultValues: {
@@ -24,6 +25,7 @@ const Login = () => {
 		resolver: yupResolver(LoginSchema),
 	});
 	const router = useRouter();
+	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId") || "";
@@ -44,7 +46,7 @@ const Login = () => {
 
 	const onSubmit = async (data: LoginType) => {
 		// window.navigator.vibrate(200);
-
+		setisLoading(true);
 		try {
 			const response = await fetch("/api/login", {
 				method: "POST",
@@ -59,6 +61,7 @@ const Login = () => {
 				localStorage.setItem("userId", res.user.id);
 				localStorage.setItem("username", res.user.username);
 				toast.success(res.message);
+				setisLoading(false);
 				router.push("/dashboard");
 			} else {
 				toast.error(res.message);
@@ -110,6 +113,7 @@ const Login = () => {
 				</div>
 				<div className="w-full flex items-center">
 					<button
+						disabled={isSubmitting}
 						type="submit"
 						className="w-full  tracking-wider bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
 					>
@@ -117,6 +121,7 @@ const Login = () => {
 					</button>
 				</div>
 			</div>
+			{isLoading && <Loader />}
 		</form>
 	);
 };
