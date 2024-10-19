@@ -96,7 +96,7 @@ const DashboardComponent = () => {
 				</div>
 
 				{NotSyncCount > 0 ? (
-					<div className="w-full max-h-[50vh] overflow-scroll mt-4">
+					<div className="w-full max-h-screen overflow-scroll mt-4">
 						<table className="w-full shadow-lg rounded">
 							<tbody className="w-full">
 								<tr className="w-[1100px] sticky top-0 left-0 grid grid-cols-9 gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
