@@ -11,6 +11,7 @@ const FamilyComponent = () => {
 	const [username, setUsername] = useState("");
 	const [aadharNum, setAdharNum] = useState("");
 	const [familyData, setFamilyData] = useState<FamilyMember[]>([]);
+	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId") || "";
@@ -45,6 +46,7 @@ const FamilyComponent = () => {
 	};
 
 	const handleSubmit = () => {
+		setisLoading(true);
 		// Filter familyData to get only checked members
 		const selectedMembers = familyData
 			.filter((member) => checkedItems.includes(member.memberId))
@@ -59,8 +61,9 @@ const FamilyComponent = () => {
 			toast.error("Please select at least one member.", {
 				position: "bottom-center",
 			});
+			setisLoading(false);
 		} else {
-			console.log("Selected Members:", selectedMembers);
+			// console.log("Selected Members:", selectedMembers);
 			// window.navigator.vibrate(200);
 
 			const NotSyncedDataString =
@@ -70,6 +73,8 @@ const FamilyComponent = () => {
 					"notSyncedFamilyData",
 					JSON.stringify(selectedMembers)
 				);
+				router.push("/dashboard");
+				setisLoading(false);
 			} else {
 				const NotSyncedData = JSON.parse(NotSyncedDataString);
 				const newData = [...selectedMembers, ...NotSyncedData];
@@ -78,6 +83,7 @@ const FamilyComponent = () => {
 					JSON.stringify(newData)
 				);
 				router.push("/dashboard");
+				setisLoading(false);
 			}
 		}
 	};
