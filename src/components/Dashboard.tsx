@@ -143,7 +143,11 @@ const DashboardComponent = () => {
 												? "Rejected"
 												: "Not Synced"}
 										</td>
-										<td>{e.deliveredAt}</td>
+										<td>
+											{new Date(
+												e.deliveredAt
+											).toLocaleTimeString()}
+										</td>
 									</tr>
 								))}
 							</tbody>
