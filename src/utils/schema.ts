@@ -15,6 +15,7 @@ const DateYup = yup
 	.typeError("Enter a valid date");
 
 export const AdharSchema = yup.object().shape({
+	adhar_number: TextYup({ len: 12, msg: "Enter valid aadhar number." }),
 	name: TextYup({ len: 3, msg: "Min 3 characters allowed" }),
 	address: TextYup({ len: 3, msg: "Min 3 characters allowed" }),
 	dob: DateYup,

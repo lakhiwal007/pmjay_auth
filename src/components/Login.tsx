@@ -65,6 +65,7 @@ const Login = () => {
 				router.push("/dashboard");
 			} else {
 				toast.error(res.message);
+				setisLoading(false);
 			}
 		} catch (error) {
 			console.log(error);

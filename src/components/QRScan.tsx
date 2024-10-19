@@ -21,7 +21,7 @@ const QrReader = () => {
 		setValue,
 		reset,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, dirtyFields },
 	} = useForm({
 		mode: "all",
 		defaultValues: {
@@ -36,7 +36,8 @@ const QrReader = () => {
 	const [scannedResult, setScannedResult] = useState<string>("");
 
 	const router = useRouter();
-
+	const [isScanedField, setIsScanedField] = useState(false);
+	const [isAdharDisable, setIsAdharDisable] = useState(false);
 	const [name, setname] = useState("");
 	const [address, setaddress] = useState("");
 	const [dob, setdob] = useState<Date | null>(null);
@@ -52,8 +53,9 @@ const QrReader = () => {
 			setgender(gender);
 			setdob(dob);
 		} else if (scannedResult) {
-			const { refId, name, address, dob, gender } = DecodeAdharQr(scannedResult);
-			setuid(refId)
+			const { refId, name, address, dob, gender } =
+				DecodeAdharQr(scannedResult);
+			setuid(refId);
 			setname(name);
 			setaddress(address);
 			setgender(gender);
@@ -67,28 +69,42 @@ const QrReader = () => {
 				position: "bottom-center",
 			});
 			// window.navigator.vibrate(200);
+			if (!(uidNum.length > 12)) {
+				setValue("adhar_number", uidNum, {
+					shouldDirty: true,
+					shouldValidate: true,
+				});
+				setIsAdharDisable(true);
+			}
 			setValue("name", name, {
+				shouldDirty: true,
 				shouldValidate: true,
 			});
 			setValue("gender", gender, {
+				shouldDirty: true,
 				shouldValidate: true,
 			});
 			setValue("dob", dob, {
+				shouldDirty: true,
 				shouldValidate: true,
 			});
 
 			setValue("address", address, {
+				shouldDirty: true,
 				shouldValidate: true,
 			});
+			setIsScanedField(true);
 			setShowVideo(false);
 		}
-	}, [name, address, dob, gender, setValue]);
+	}, [name, address, dob, gender, setValue, uidNum]);
 
 	const handleScan = () => {
 		setShowVideo(true);
 	};
 
 	const handleClose = () => {
+		setIsScanedField(false);
+		setIsAdharDisable(false);
 		setShowVideo(false);
 		reset();
 		setScannedResult("");
@@ -108,8 +124,9 @@ const QrReader = () => {
 		const NotSyncedDataString = localStorage.getItem("notSyncedData") || "";
 		const NotSyncedData = JSON.parse(NotSyncedDataString);
 		const newData = [newObj, ...NotSyncedData];
+		localStorage.setItem("AadharNumber", data.adhar_number);
 		localStorage.setItem("notSyncedData", JSON.stringify(newData));
-		router.back();
+		router.push("/family_details");
 	};
 
 	return (
@@ -164,6 +181,20 @@ const QrReader = () => {
 			>
 				<div className="w-full relative">
 					<p className="font-semibold">
+						Aadhar Number
+						<span className="text-orange-600">*</span>
+					</p>
+					<TextController
+						name="adhar_number"
+						control={control}
+						error={errors.adhar_number?.message}
+						maxLength={12}
+						type={"number"}
+						disable={isAdharDisable}
+					/>
+				</div>
+				<div className="w-full relative">
+					<p className="font-semibold">
 						Name
 						<span className="text-orange-600">*</span>
 					</p>
@@ -172,6 +203,7 @@ const QrReader = () => {
 						control={control}
 						error={errors.name?.message}
 						maxLength={50}
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -184,6 +216,7 @@ const QrReader = () => {
 						control={control}
 						error={errors?.gender?.message}
 						OptionList={GenderRadio}
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -194,6 +227,7 @@ const QrReader = () => {
 						name={"dob"}
 						error={errors.dob?.message}
 						control={control}
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -206,6 +240,7 @@ const QrReader = () => {
 						control={control}
 						error={errors.address?.message}
 						maxLength={250}
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full flex items-center space-x-4">

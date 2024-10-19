@@ -13,6 +13,7 @@ const DateController = ({
 	formatDate = "DD MMMM, YYYY",
 	placeholder = "Date",
 	showError = true,
+	disable = false,
 }: any) => {
 	return (
 		<>
@@ -25,6 +26,7 @@ const DateController = ({
 							<div>
 								<PopoverTrigger asChild>
 									<button
+										disabled={disable}
 										className={`w-full flex items-center disabled:bg-[rgb(244,244,242)] ${
 											error !== undefined &&
 											"border-orange-600"

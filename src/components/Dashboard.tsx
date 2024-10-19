@@ -11,13 +11,15 @@ import {
 	FaFileLines,
 } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { ADHAR_TYPE } from "@/utils/types";
+import { ADHAR_TYPE, FamilyMemberNotSynced } from "@/utils/types";
 import Header from "./Header";
 
 const DashboardComponent = () => {
 	const router = useRouter();
 	const [username, setUsername] = useState("");
-	const [NotSyncedData, setNotSyncedData] = useState<ADHAR_TYPE[]>([]);
+	const [NotSyncedData, setNotSyncedData] = useState<FamilyMemberNotSynced[]>(
+		[]
+	);
 	const [NotSyncCount, setNotSyncCount] = useState(0);
 
 	useEffect(() => {
@@ -30,10 +32,12 @@ const DashboardComponent = () => {
 	}, [router]);
 
 	useEffect(() => {
-		const dataString = localStorage.getItem("notSyncedData") || "";
-		const data: ADHAR_TYPE[] = JSON.parse(dataString);
-		setNotSyncCount(data.length);
-		setNotSyncedData(data);
+		const dataString = localStorage.getItem("notSyncedFamilyData") || "";
+		if (dataString !== "") {
+			const data: FamilyMemberNotSynced[] = JSON.parse(dataString);
+			setNotSyncCount(data.length);
+			setNotSyncedData(data);
+		}
 	}, []);
 
 	return (
@@ -95,20 +99,32 @@ const DashboardComponent = () => {
 					<div className="w-full max-h-[50vh] overflow-scroll mt-4">
 						<table className="w-full shadow-lg rounded">
 							<tbody className="w-full">
-								<tr className="w-[700px] sticky top-0 left-0 grid grid-cols-[1fr,70px,100px,1fr_1fr_1fr] gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
-									<th className="text-left">Name</th>
+								<tr className="w-[1100px] sticky top-0 left-0 grid grid-cols-9 gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
+									<th className="text-left">Family ID</th>
+									<th></th>
+									<th>Member ID</th>
+									<th>Name</th>
 									<th>Gender</th>
 									<th>DOB</th>
 									<th>Address</th>
 									<th>Status</th>
-									<th>Scaned At</th>
+									<th>Delivered At</th>
 								</tr>
 								{NotSyncedData.map((e, index) => (
 									<tr
 										key={index}
-										className="w-[700px] grid grid-cols-[1fr,70px,100px,1fr_1fr_1fr] gap-2 px-2 py-4 rounded odd:bg-slate-100 divide-x-[1px] text-center"
+										className="w-[1100px] grid grid-cols-9 gap-2 px-2 py-4 rounded odd:bg-slate-100 divide-x-[1px] text-center"
 									>
-										<td className="truncate text-left">
+										<td className="truncate text-left pl-2 col-span-2">
+											{e.familyId}
+										</td>
+										<td className="truncate text-left pl-2">
+											{`${e.memberId.substring(
+												0,
+												3
+											)}...${e.memberId.substring(16)}`}
+										</td>
+										<td className="truncate text-left pl-2">
 											{e.name}
 										</td>
 										<td className="truncate">{e.gender}</td>
@@ -127,7 +143,7 @@ const DashboardComponent = () => {
 												? "Rejected"
 												: "Not Synced"}
 										</td>
-										<td>{e.timeAt}</td>
+										<td>{e.deliveredAt}</td>
 									</tr>
 								))}
 							</tbody>

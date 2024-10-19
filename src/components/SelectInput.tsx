@@ -1,7 +1,13 @@
 import React from "react";
 import { Controller } from "react-hook-form";
 
-const SelectInput = ({ name, error, control, OptionList }: any) => {
+const SelectInput = ({
+	name,
+	error,
+	control,
+	OptionList,
+	disable = false,
+}: any) => {
 	return (
 		<>
 			<Controller
@@ -14,7 +20,8 @@ const SelectInput = ({ name, error, control, OptionList }: any) => {
 						onChange={(selectedOption) => {
 							field.onChange(selectedOption);
 						}}
-						className={`w-full p-[9px] border-[1px] bg-transparent border-gray-300 rounded`}
+						disabled={disable}
+						className={`w-full p-[9px] border-[1px] bg-transparent border-gray-300 rounded disabled:bg-[rgb(244,244,242)]`}
 					>
 						<option key={""} value={""}>
 							Select...
