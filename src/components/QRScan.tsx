@@ -21,7 +21,7 @@ const QrReader = () => {
 		setValue,
 		reset,
 		handleSubmit,
-		formState: { errors, isSubmitting, dirtyFields },
+		formState: { errors, isSubmitting },
 	} = useForm({
 		mode: "all",
 		defaultValues: {
@@ -34,6 +34,7 @@ const QrReader = () => {
 
 	// Result
 	const [scannedResult, setScannedResult] = useState<string>("");
+	const [isLoading, setisLoading] = useState(false);
 
 	const router = useRouter();
 	const [isScanedField, setIsScanedField] = useState(false);
@@ -112,6 +113,7 @@ const QrReader = () => {
 
 	const onSubmit = async (data: FieldValues) => {
 		// window.navigator.vibrate(200);
+		setisLoading(true);
 		const timeAt = new Date().toLocaleTimeString();
 		const status = 1;
 		const newObj = {
@@ -126,6 +128,7 @@ const QrReader = () => {
 		const newData = [newObj, ...NotSyncedData];
 		localStorage.setItem("AadharNumber", data.adhar_number);
 		localStorage.setItem("notSyncedData", JSON.stringify(newData));
+		setisLoading(false);
 		router.push("/family_details");
 	};
 

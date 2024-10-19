@@ -11,7 +11,7 @@ import {
 	FaFileLines,
 } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { ADHAR_TYPE, FamilyMemberNotSynced } from "@/utils/types";
+import { FamilyMemberNotSynced } from "@/utils/types";
 import Header from "./Header";
 
 const DashboardComponent = () => {
@@ -146,7 +146,7 @@ const DashboardComponent = () => {
 										<td>
 											{new Date(
 												e.deliveredAt
-											).toLocaleTimeString()}
+											).toLocaleString()}
 										</td>
 									</tr>
 								))}
