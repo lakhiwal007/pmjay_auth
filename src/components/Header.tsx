@@ -13,6 +13,7 @@ import LOGO from "../../public/icons/pmjay_logo-512.png";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useNetworkConnectivity } from "@/hooks/useNetworkConnectivity";
+import Link from "next/link";
 type Props = {
 	username: string;
 };
@@ -22,7 +23,7 @@ const Header = ({ username }: Props) => {
 
 	return (
 		<div className="w-full flex shadow-sm rounded p-2 justify-between items-center">
-			<div>
+			<Link href={"/dashboard"}>
 				<Image
 					src={LOGO}
 					width={120}
@@ -30,7 +31,7 @@ const Header = ({ username }: Props) => {
 					className="rounded-full shadow-sm"
 					alt="logo"
 				/>
-			</div>
+			</Link>
 			<div className="w-full relative flex items-center justify-end space-x-2">
 				<p className="font-bold truncate max-w-24">{username}</p>
 
