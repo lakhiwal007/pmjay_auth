@@ -5,7 +5,7 @@ import { MdOutlineQrCodeScanner } from "react-icons/md";
 import toast from "react-hot-toast";
 import TextController from "./TextController";
 import DateController from "./DateController";
-import { FieldValues, useForm } from "react-hook-form";
+import { Controller, FieldValues, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AdharSchema } from "@/utils/schema";
 import { GenderRadio } from "@/utils/constants";
@@ -187,14 +187,34 @@ const QrReader = () => {
 						Aadhar Number
 						<span className="text-orange-600">*</span>
 					</p>
-					<TextController
-						name="adhar_number"
-						control={control}
-						error={errors.adhar_number?.message}
-						maxLength={12}
-						type={"number"}
-						disable={isAdharDisable}
-					/>
+
+					<div className="w-full flex flex-col">
+						<Controller
+							name={"adhar_number"}
+							control={control}
+							defaultValue={""}
+							render={({ field }) => (
+								<input
+									{...field}
+									type={"tel"}
+									pattern="[0-9]{12}"
+									maxLength={12}
+									disabled={isAdharDisable}
+									className={`w-full disabled:bg-[rgb(244,244,242)] ${
+										errors.adhar_number?.message !==
+										undefined
+											? "border-orange-600 focus-within:border-orange-600"
+											: "focus-within:border-sky-500"
+									}  p-2 border-[1.9px] border-gray-300 focus:border-2 rounded-[5px] outline-none`}
+								/>
+							)}
+						/>
+						{errors.adhar_number?.message && (
+							<p className="text-orange-600">
+								{errors.adhar_number?.message}
+							</p>
+						)}
+					</div>
 				</div>
 				<div className="w-full relative">
 					<p className="font-semibold">
@@ -238,13 +258,31 @@ const QrReader = () => {
 						Address
 						<span className="text-orange-600">*</span>
 					</p>
-					<TextController
-						name="address"
-						control={control}
-						error={errors.address?.message}
-						maxLength={250}
-						disable={isScanedField}
-					/>
+					<div className="w-full flex flex-col">
+						<Controller
+							name={"address"}
+							control={control}
+							defaultValue={""}
+							render={({ field }) => (
+								<textarea
+									{...field}
+									rows={3}
+									maxLength={250}
+									disabled={isScanedField}
+									className={`w-full disabled:bg-[rgb(244,244,242)] ${
+										errors.address?.message !== undefined
+											? "border-orange-600 focus-within:border-orange-600"
+											: "focus-within:border-sky-500"
+									}  p-2 border-[1.9px] border-gray-300 focus:border-2 rounded-[5px] outline-none`}
+								/>
+							)}
+						/>
+						{errors.address?.message && (
+							<p className="text-orange-600">
+								{errors.address?.message}
+							</p>
+						)}
+					</div>
 				</div>
 				<div className="w-full flex items-center space-x-4">
 					<button
