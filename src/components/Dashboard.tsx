@@ -10,17 +10,28 @@ import {
 	FaFileCircleXmark,
 	FaFileLines,
 } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FamilyMemberNotSynced } from "@/utils/types";
 import Header from "./Header";
+import Card from "./Card";
+import Paginator from "@/utils/paginator";
 
 const DashboardComponent = () => {
 	const router = useRouter();
+	const params = useSearchParams();
+	const cuurIndex = params?.get("page") || 1;
+
 	const [username, setUsername] = useState("");
 	const [NotSyncedData, setNotSyncedData] = useState<FamilyMemberNotSynced[]>(
 		[]
 	);
 	const [NotSyncCount, setNotSyncCount] = useState(0);
+	const [CurrPageIndex, setCurrPageIndex] = useState(Number(cuurIndex));
+	const NUM_ROWS = 5;
+
+	useEffect(() => {
+		setCurrPageIndex(Number(cuurIndex));
+	}, [cuurIndex]);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId") || "";
@@ -36,9 +47,14 @@ const DashboardComponent = () => {
 		if (dataString !== "") {
 			const data: FamilyMemberNotSynced[] = JSON.parse(dataString);
 			setNotSyncCount(data.length);
-			setNotSyncedData(data);
+			const InitialIndex = (CurrPageIndex - 1) * NUM_ROWS;
+			setNotSyncedData(data.slice(InitialIndex, InitialIndex + NUM_ROWS));
 		}
-	}, []);
+	}, [CurrPageIndex]);
+
+	const onPageHandle = (pageNum: number) => {
+		setCurrPageIndex(pageNum + 1);
+	};
 
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">
@@ -55,48 +71,39 @@ const DashboardComponent = () => {
 					</button>
 				</div>
 				<div className="w-full grid grid-cols-2 gap-4">
-					<button
-						type="button"
-						className="w-full bg-blue-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-blue-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
-					>
-						<FaFileLines className="w-12 h-12 absolute right-2 top-auto text-blue-700" />
-						<p className="font-semibold">E KYC</p>
-						<p className="font-bold text-4xl ml-2">0</p>
-					</button>
-					<button
-						type="button"
-						// onClick={handleSync}
-						className="w-full bg-gray-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-gray-100 active:shadow-lg cursor-pointer flex flex-col items-start justify-start"
-					>
-						<MdOutlinePendingActions className="w-12 h-12 absolute right-2 top-auto text-gray-700" />
-						<p className="font-semibold">Not Synced</p>
-						<p className="font-bold text-4xl ml-2">
-							{NotSyncCount}
-						</p>
-						{/* <p className="text-[11px] absolute bottom-2 right-2">
-							Last Synced : 7th Oct, 03:10
-						</p> */}
-					</button>
-					<button
-						type="button"
-						className="w-full bg-green-50 relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-green-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
-					>
-						<FaFileCircleCheck className="w-12 h-12 absolute right-2 top-auto text-green-700" />
-						<p className="font-semibold">Accepted</p>
-						<p className="font-bold text-4xl ml-2">0</p>
-					</button>
-					<button
-						type="button"
-						className="w-full bg-red-50  relative font-semibold max-w-70 min-h-[100px] border-[1px] rounded-lg p-4 shadow-sm shadow-red-100 flex flex-col items-start justify-start active:shadow-lg cursor-pointer"
-					>
-						<FaFileCircleXmark className="w-12 h-12 absolute right-2 top-auto text-red-700" />
-						<p className="font-semibold">Rejected</p>
-						<p className="font-bold text-4xl ml-2">0</p>
-					</button>
+					<Card
+						Title={"E KYC"}
+						Count={0}
+						Icon={FaFileLines}
+						classNameButton="shadow-blue-100 bg-blue-100"
+						classNameIcon="text-blue-700"
+					/>
+
+					<Card
+						Title={"Not Synced"}
+						Count={NotSyncCount}
+						Icon={MdOutlinePendingActions}
+						classNameButton="shadow-gray-100 bg-gray-100"
+						classNameIcon="text-gray-700"
+					/>
+					<Card
+						Title={"Accepted"}
+						Count={0}
+						Icon={FaFileCircleCheck}
+						classNameButton="shadow-green-100 bg-green-100"
+						classNameIcon="text-green-700"
+					/>
+					<Card
+						Title={"Rejected"}
+						Count={0}
+						Icon={FaFileCircleXmark}
+						classNameButton="shadow-red-100 bg-red-100"
+						classNameIcon="text-red-700"
+					/>
 				</div>
 
 				{NotSyncCount > 0 ? (
-					<div className="w-full max-h-screen overflow-scroll mt-4">
+					<div className="w-full max-h-screen overflow-x-scroll mt-4">
 						<table className="w-full shadow-lg rounded">
 							<tbody className="w-full">
 								<tr className="w-[1100px] sticky top-0 left-0 grid grid-cols-9 gap-2 bg-blue-600 text-white px-2 py-4 rounded text-center tracking-wider">
@@ -154,8 +161,16 @@ const DashboardComponent = () => {
 						</table>
 					</div>
 				) : (
-					""
+					"No data"
 				)}
+				<div className="w-full mb-8 mt-4">
+					<Paginator
+						currentPage={CurrPageIndex}
+						totalPages={Math.floor(NotSyncCount / NUM_ROWS)}
+						onPageChange={(pageNumber) => onPageHandle(pageNumber)}
+						showPreviousNext
+					/>
+				</div>
 			</div>
 		</div>
 	);

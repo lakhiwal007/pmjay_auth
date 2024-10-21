@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { MdOutlineQrCodeScanner } from "react-icons/md";
+import {
+	MdCancel,
+	MdCheckCircle,
+	MdCheckCircleOutline,
+	MdOutlineQrCodeScanner,
+} from "react-icons/md";
 import toast from "react-hot-toast";
 import TextController from "./TextController";
 import DateController from "./DateController";
@@ -14,6 +19,7 @@ import QrString from "@/hooks/QrString";
 import { DecodeAdharQr } from "@/utils/decodeAdhar";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useRouter } from "next/navigation";
+import ValidateAadhar from "@/utils/validateAdhar";
 
 const QrReader = () => {
 	const {
@@ -22,6 +28,7 @@ const QrReader = () => {
 		reset,
 		handleSubmit,
 		formState: { errors, isSubmitting },
+		watch,
 	} = useForm({
 		mode: "all",
 		defaultValues: {
@@ -35,6 +42,8 @@ const QrReader = () => {
 	// Result
 	const [scannedResult, setScannedResult] = useState<string>("");
 	const [isLoading, setisLoading] = useState(false);
+	const [isValidAdhar, setisValidAdhar] = useState(false);
+	const [isValidAdharLen, setisValidAdharLen] = useState(0);
 
 	const router = useRouter();
 	const [isScanedField, setIsScanedField] = useState(false);
@@ -101,7 +110,20 @@ const QrReader = () => {
 
 	const handleScan = () => {
 		setShowVideo(true);
+		reset();
 	};
+
+	const AdharWatch = watch("adhar_number");
+	useEffect(() => {
+		if (AdharWatch && AdharWatch?.length === 12) {
+			const validAdhar = ValidateAadhar(AdharWatch);
+			setisValidAdhar(validAdhar);
+			setisValidAdharLen(12);
+		} else {
+			setisValidAdhar(false);
+			setisValidAdharLen(0);
+		}
+	}, [AdharWatch]);
 
 	const handleClose = () => {
 		setIsScanedField(false);
@@ -194,24 +216,38 @@ const QrReader = () => {
 							control={control}
 							defaultValue={""}
 							render={({ field }) => (
-								<input
-									{...field}
-									type={"tel"}
-									pattern="[0-9]{12}"
-									maxLength={12}
-									disabled={isAdharDisable}
-									className={`w-full disabled:bg-[rgb(244,244,242)] ${
-										errors.adhar_number?.message !==
-										undefined
-											? "border-orange-600 focus-within:border-orange-600"
-											: "focus-within:border-sky-500"
-									}  p-2 border-[1.9px] border-gray-300 focus:border-2 rounded-[5px] outline-none`}
-								/>
+								<div className="w-full relative flex items-center justify-center">
+									<input
+										{...field}
+										type={"tel"}
+										pattern="[0-9]{12}"
+										maxLength={12}
+										disabled={isAdharDisable}
+										className={`w-full disabled:bg-[rgb(244,244,242)] ${
+											errors.adhar_number?.message !==
+											undefined
+												? "border-orange-600 focus-within:border-orange-600"
+												: "focus-within:border-sky-500"
+										}  p-2 border-[1.9px] border-gray-300 focus:border-2 rounded-[5px] outline-none`}
+									/>
+									{isValidAdhar && (
+										<MdCheckCircle className="w-6 h-6 absolute text-green-700 right-2 top-auto" />
+									)}
+									{!isValidAdhar &&
+										isValidAdharLen === 12 && (
+											<MdCancel className="w-6 h-6 absolute text-red-700 right-2 top-auto" />
+										)}
+								</div>
 							)}
 						/>
 						{errors.adhar_number?.message && (
 							<p className="text-orange-600">
 								{errors.adhar_number?.message}
+							</p>
+						)}
+						{!isValidAdhar && isValidAdharLen === 12 && (
+							<p className="w-full text-orange-600">
+								Aadhar number is not valid*
 							</p>
 						)}
 					</div>
@@ -294,8 +330,8 @@ const QrReader = () => {
 					</button>
 					<button
 						type="submit"
-						disabled={isSubmitting}
-						className="w-full bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none"
+						disabled={isSubmitting || !isValidAdhar}
+						className="w-full bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none disabled:cursor-not-allowed disabled:bg-gray-400"
 					>
 						{isSubmitting ? "Submitting..." : "Submit"}
 					</button>

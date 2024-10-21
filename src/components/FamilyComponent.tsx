@@ -103,7 +103,7 @@ const FamilyComponent = () => {
 						{familyData.map((e, index) => (
 							<button
 								key={index}
-								className="w-full text-left relative grid grid-cols-3 gap-2 bg-blue-500/50 odd:bg-emerald-500/50 backdrop-blur-md  items-start p-4 rounded-md shadow-md border-[1px] active:shadow-none active:bg-blue-500/60 odd:active:bg-emerald-500/60"
+								className="w-full text-left relative grid grid-cols-3 gap-2 bg-blue-600/50 odd:bg-emerald-600/50 backdrop-blur-md  items-start p-4 rounded-md shadow-md border-[1px] active:shadow-none active:bg-blue-600/60 odd:active:bg-emerald-600/60"
 								onClick={() => handleToggleCheckbox(e.memberId)}
 							>
 								<input
