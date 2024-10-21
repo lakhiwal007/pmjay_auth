@@ -75,7 +75,7 @@ const FamilyComponent = () => {
 					"notSyncedFamilyData",
 					JSON.stringify(selectedMembers)
 				);
-				router.push("/dashboard");
+				router.replace("/dashboard");
 				setisLoading(false);
 			} else {
 				const NotSyncedData = JSON.parse(NotSyncedDataString);
@@ -84,7 +84,7 @@ const FamilyComponent = () => {
 					"notSyncedFamilyData",
 					JSON.stringify(newData)
 				);
-				router.push("/dashboard");
+				router.replace("/dashboard");
 				setisLoading(false);
 			}
 		}

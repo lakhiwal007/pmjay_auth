@@ -166,7 +166,7 @@ const DashboardComponent = () => {
 				<div className="w-full mb-8 mt-4">
 					<Paginator
 						currentPage={CurrPageIndex}
-						totalPages={Math.floor(NotSyncCount / NUM_ROWS)}
+						totalPages={Math.ceil(NotSyncCount / NUM_ROWS)}
 						onPageChange={(pageNumber) => onPageHandle(pageNumber)}
 						showPreviousNext
 					/>

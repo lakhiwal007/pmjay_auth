@@ -34,7 +34,7 @@ export default function Paginator({
 					</PaginationItem>
 				) : null}
 				{generatePaginationLinks(currentPage, totalPages, onPageChange)}
-				{showPreviousNext && currentPage <= totalPages ? (
+				{showPreviousNext && currentPage < totalPages ? (
 					<PaginationItem>
 						<PaginationNext
 							onClick={() => onPageChange(currentPage + 1)}
