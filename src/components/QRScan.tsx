@@ -27,7 +27,7 @@ const QrReader = () => {
 		setValue,
 		reset,
 		handleSubmit,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isValid },
 		watch,
 	} = useForm({
 		mode: "all",
@@ -262,7 +262,7 @@ const QrReader = () => {
 						control={control}
 						error={errors.name?.message}
 						maxLength={50}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -275,7 +275,7 @@ const QrReader = () => {
 						control={control}
 						error={errors?.gender?.message}
 						OptionList={GenderRadio}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -286,7 +286,7 @@ const QrReader = () => {
 						name={"dob"}
 						error={errors.dob?.message}
 						control={control}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -304,12 +304,12 @@ const QrReader = () => {
 									{...field}
 									rows={3}
 									maxLength={250}
-									disabled={isScanedField}
+									disabled
 									className={`w-full disabled:bg-[rgb(244,244,242)] ${
 										errors.address?.message !== undefined
 											? "border-orange-600 focus-within:border-orange-600"
 											: "focus-within:border-sky-500"
-									}  p-2 border-[1.9px] border-gray-300 focus:border-2 rounded-[5px] outline-none`}
+									}  p-2 border-[1.9px] resize-none border-gray-300 focus:border-2 rounded-[5px] outline-none`}
 								/>
 							)}
 						/>
@@ -330,7 +330,7 @@ const QrReader = () => {
 					</button>
 					<button
 						type="submit"
-						disabled={isSubmitting || !isValidAdhar}
+						disabled={isSubmitting || !isValidAdhar || !isValid}
 						className="w-full bg-orange-700 shadow-md px-4 py-2 rounded text-white active:shadow-none disabled:cursor-not-allowed disabled:bg-gray-400"
 					>
 						{isSubmitting ? "Submitting..." : "Submit"}

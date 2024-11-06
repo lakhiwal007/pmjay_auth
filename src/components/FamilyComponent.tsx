@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import getFamilyMembersByAdhar from "@/utils/getFamilyMembersByAdhar";
-import { FamilyMember } from "@/utils/types";
+import { FamilyMember, FamilyMemberData } from "@/utils/types";
 import toast from "react-hot-toast";
 import NODATA from "../../public/no_data_found.svg";
 import Image from "next/image";
@@ -12,7 +12,7 @@ const FamilyComponent = () => {
 	const router = useRouter();
 	const [username, setUsername] = useState("");
 	const [aadharNum, setAdharNum] = useState("");
-	const [familyData, setFamilyData] = useState<FamilyMember[]>([]);
+	const [familyData, setFamilyData] = useState<FamilyMemberData[]>([]);
 	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
@@ -27,12 +27,16 @@ const FamilyComponent = () => {
 		const UserName = localStorage.getItem("username") || "";
 		setAdharNum(AdharNum);
 		setUsername(UserName);
+		// console.log("AdharNum", AdharNum);
 	}, [router]);
 
 	useEffect(() => {
 		if (aadharNum) {
+			setisLoading(true);
 			const data = getFamilyMembersByAdhar(aadharNum);
+			// console.log("data", data);
 			setFamilyData(data);
+			setisLoading(false);
 		}
 	}, [aadharNum]);
 
@@ -51,7 +55,7 @@ const FamilyComponent = () => {
 		setisLoading(true);
 		// Filter familyData to get only checked members
 		const selectedMembers = familyData
-			.filter((member) => checkedItems.includes(member.memberId))
+			.filter((member) => checkedItems.includes(member.ben_id))
 			.map((member) => ({
 				...member,
 				status: 1,
@@ -104,48 +108,58 @@ const FamilyComponent = () => {
 							<button
 								key={index}
 								className="w-full text-left relative grid grid-cols-3 gap-2 bg-blue-600/50 odd:bg-emerald-600/50 backdrop-blur-md  items-start p-4 rounded-md shadow-md border-[1px] active:shadow-none active:bg-blue-600/60 odd:active:bg-emerald-600/60"
-								onClick={() => handleToggleCheckbox(e.memberId)}
+								onClick={() => handleToggleCheckbox(e.ben_id)}
 							>
 								<input
 									className="absolute top-2 right-2"
 									type="checkbox"
 									name="memberId"
 									id="memberId"
-									checked={checkedItems.includes(e.memberId)} // Set checkbox checked state
+									checked={checkedItems.includes(e.ben_id)} // Set checkbox checked state
 									readOnly // Prevent manual change, controlled by button click
 								/>
 								<div className="col-span-2">
 									<p className="font-semibold">Family ID</p>
-									<p className="truncate">{e.familyId}</p>
+									<p className="truncate">{e.family_id}</p>
 								</div>
 								<div className="col-span-2">
 									<p className="font-semibold">
 										Aadhar Number
 									</p>
-									<p className="truncate">{e.adharNumber}</p>
+									<p className="truncate">{`XXXXXXXX${e.aadhar_id.substring(
+										8
+									)}`}</p>
 								</div>
 								<div>
-									<p className="font-semibold">Member ID</p>
-									<p className="truncate">{`${e.memberId.substring(
-										0,
-										4
-									)}...${e.memberId.substring(15)}`}</p>
+									<p className="font-semibold">
+										Beneficiary ID
+									</p>
+									<p className="truncate">
+										{e.ben_id.length > 10
+											? `${e.ben_id.substring(
+													0,
+													4
+											  )}...${e.ben_id.substring(15)}`
+											: e.ben_id}
+									</p>
 								</div>
 
 								<div>
 									<p className="font-semibold">Name</p>
-									<p className="truncate">{e.name}</p>
+									<p className="truncate">{e.card_name}</p>
 								</div>
 
 								<div>
 									<p className="font-semibold">Gender</p>
-									<p className="truncate">{e.gender}</p>
+									<p className="truncate">{e.card_gender}</p>
 								</div>
 
 								<div>
 									<p className="font-semibold">DOB</p>
 									<p className="truncate">
-										{new Date(e.dob).toLocaleDateString()}{" "}
+										{new Date(
+											e.card_yob
+										).toLocaleDateString()}{" "}
 									</p>
 								</div>
 							</button>

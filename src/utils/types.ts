@@ -23,6 +23,29 @@ export type FamilyMember = {
 	address: string;
 };
 
+export type FamilyMemberData = {
+	family_id: string;
+	ben_id: string;
+	aadhar_id: string;
+	card_name: string;
+	card_gender: string;
+	card_yob: string;
+	card_address: string;
+};
+
+export type FamilyMemberNotSyncedData = {
+	family_id: string;
+	ben_id: string;
+	aadhar_id: string;
+	card_name: string;
+	card_gender: string;
+	card_yob: string;
+	card_address: string;
+	status: number;
+	delivered: boolean;
+	deliveredAt: string;
+};
+
 export type FamilyMemberNotSynced = {
 	familyId: string;
 	memberId: string;
