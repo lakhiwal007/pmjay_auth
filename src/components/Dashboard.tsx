@@ -22,6 +22,7 @@ import Card from "./Card";
 import Paginator from "@/utils/paginator";
 import { csvToJson } from "@/utils/csvToJSON";
 import Loader from "./Loader";
+import toast from "react-hot-toast";
 
 const DashboardComponent = () => {
 	const router = useRouter();
@@ -74,7 +75,12 @@ const DashboardComponent = () => {
 		const reader = new FileReader();
 		reader.onload = () => {
 			const res = csvToJson(String(reader.result));
-			localStorage.setItem("data", JSON.stringify(res));
+			if (res.length > 0) {
+				localStorage.setItem("data", JSON.stringify(res));
+				toast.success("Data uploaded successfully.");
+			} else {
+				toast.error("Upload Valid CSV File.");
+			}
 			setisUploading(false);
 		};
 		if (e.target.files) {
@@ -127,11 +133,11 @@ const DashboardComponent = () => {
 				</div>
 				<div className="w-full grid grid-cols-2 gap-4">
 					<Card
-						Title={"E KYC"}
+						Title={"Delivered"}
 						Count={0}
 						Icon={FaFileLines}
-						classNameButton="shadow-blue-100 bg-blue-100"
-						classNameIcon="text-blue-700"
+						classNameButton="shadow-teal-100 bg-teal-100"
+						classNameIcon="text-teal-700"
 					/>
 
 					<Card
@@ -141,7 +147,7 @@ const DashboardComponent = () => {
 						classNameButton="shadow-gray-100 bg-gray-100"
 						classNameIcon="text-gray-700"
 					/>
-					<Card
+					{/* <Card
 						Title={"Accepted"}
 						Count={0}
 						Icon={FaFileCircleCheck}
@@ -154,7 +160,7 @@ const DashboardComponent = () => {
 						Icon={FaFileCircleXmark}
 						classNameButton="shadow-red-100 bg-red-100"
 						classNameIcon="text-red-700"
-					/>
+					/> */}
 				</div>
 
 				{NotSyncCount > 0 ? (

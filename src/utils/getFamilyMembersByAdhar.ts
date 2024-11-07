@@ -24,11 +24,9 @@ export default function getFamilyMembersByAdhar(
 	// console.log(FAMILY_DATA);
 	const member = FAMILY_DATA.find((member: FamilyMemberData) => {
 		return (
-			member.aadhar_id === adharNumber &&
+			member.aadhar_id.substring(8) === adharNumber.substring(8) &&
 			member.card_name === Scan_Data.name &&
-			member.card_gender === Scan_Data.gender &&
-			new Date(member.card_yob).toLocaleDateString() ===
-				new Date(Scan_Data.dob).toLocaleDateString()
+			member.card_gender === Scan_Data.gender
 		);
 	});
 

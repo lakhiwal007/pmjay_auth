@@ -56,7 +56,7 @@ const DateController = ({
 										date < new Date("1900-01-01")
 									}
 									captionLayout="dropdown-buttons"
-									fromYear={1960}
+									fromYear={1930}
 									toYear={new Date().getFullYear()}
 								/>
 							</PopoverContent>

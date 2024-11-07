@@ -45,6 +45,17 @@ export function csvToJson(csvData: string): any[] {
 		'"sub_district_name"',
 		'"village_name"',
 	];
+	let isValidHeader = true;
+
+	for (let i = 0; i < checkHead.length - 1; i++) {
+		if (checkHead[i] !== headers[i]) {
+			isValidHeader = false;
+			break;
+		}
+	}
+	if (!isValidHeader) {
+		return [];
+	}
 
 	return lines.slice(1).map((line) => {
 		const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];

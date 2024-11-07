@@ -258,7 +258,7 @@ const QrReader = () => {
 						control={control}
 						error={errors.name?.message}
 						maxLength={50}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -271,7 +271,7 @@ const QrReader = () => {
 						control={control}
 						error={errors?.gender?.message}
 						OptionList={GenderRadio}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -282,7 +282,7 @@ const QrReader = () => {
 						name={"dob"}
 						error={errors.dob?.message}
 						control={control}
-						disable={isScanedField}
+						disable
 					/>
 				</div>
 				<div className="w-full">
@@ -300,7 +300,7 @@ const QrReader = () => {
 									{...field}
 									rows={3}
 									maxLength={250}
-									disabled={isScanedField}
+									disabled
 									className={`w-full disabled:bg-[rgb(244,244,242)] ${
 										errors.address?.message !== undefined
 											? "border-orange-600 focus-within:border-orange-600"
