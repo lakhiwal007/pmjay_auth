@@ -64,7 +64,7 @@ const QrReader = () => {
 		} else if (scannedResult) {
 			const { refId, name, address, dob, gender } =
 				DecodeAdharQr(scannedResult);
-			setuid(refId);
+			// setuid(refId);
 			setname(name);
 			setaddress(address);
 			setgender(gender);
@@ -78,7 +78,7 @@ const QrReader = () => {
 				position: "bottom-center",
 			});
 			// window.navigator.vibrate(200);
-			if (!(uidNum.length > 12)) {
+			if (uidNum.length === 12) {
 				setValue("adhar_number", uidNum, {
 					shouldDirty: true,
 					shouldValidate: true,

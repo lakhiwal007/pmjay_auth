@@ -7,6 +7,7 @@ const QrString = (QrText: string) => {
 	const yobMatch = QrText.match(/yob="([^"]+)"/) || "";
 
 	// Extract values using regular expressions
+	const addrsMatch = QrText.match(/address="([^"]+)"/);
 	const lmMatch = QrText.match(/lm="([^"]+)"/);
 	const vtcMatch = QrText.match(/vtc="([^"]+)"/);
 	const poMatch = QrText.match(/po="([^"]+)"/);
@@ -16,6 +17,7 @@ const QrString = (QrText: string) => {
 	const pcMatch = QrText.match(/pc="([^"]+)"/);
 
 	// Assign values to variables
+	const addrs = addrsMatch ? addrsMatch[1] : "";
 	const lm = lmMatch ? lmMatch[1] : "";
 	const vtc = vtcMatch ? vtcMatch[1] : "";
 	const po = poMatch ? poMatch[1] : "";
@@ -57,6 +59,9 @@ const QrString = (QrText: string) => {
 		.join(", ");
 	if (address[0] === ",") {
 		const addrs = address.split(", ").splice(1).join(",");
+		address = addrs;
+	}
+	if (address === "") {
 		address = addrs;
 	}
 	return {
