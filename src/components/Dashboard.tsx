@@ -70,22 +70,22 @@ const DashboardComponent = () => {
 		fileRef.current?.click();
 	};
 
-	const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const onFileChangeCapture = async (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
 		setisUploading(true);
-		const reader = new FileReader();
-		reader.onload = () => {
-			const res = csvToJson(String(reader.result));
-			if (res.length > 0) {
-				localStorage.setItem("data", JSON.stringify(res));
+
+		if (e.target.files) {
+			// start reading the file. When it is done, calls the onload event defined above.
+			const file = e.target?.files[0];
+			const data = await csvToJson(file);
+			if (data.length > 0) {
+				localStorage.setItem("data", JSON.stringify(data));
 				toast.success("Data uploaded successfully.");
 			} else {
 				toast.error("Upload Valid CSV File.");
 			}
 			setisUploading(false);
-		};
-		if (e.target.files) {
-			// start reading the file. When it is done, calls the onload event defined above.
-			reader.readAsText(e.target?.files[0]);
 		}
 	};
 

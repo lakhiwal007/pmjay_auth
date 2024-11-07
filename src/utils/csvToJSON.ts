@@ -1,79 +1,113 @@
+import toast from "react-hot-toast";
+import Papa from "papaparse";
+
 // Function to parse CSV and convert to JSON
-export function csvToJson(csvData: string): any[] {
-	const lines = csvData.trim().split("\n");
-	const headers = lines[0].split(",");
+export function csvToJson(csvData: File): Promise<any[]> {
 	const checkHead = [
-		'"card_no"',
-		'"entity_id"',
-		'"batch_id"',
-		'"user_id"',
-		'"state_cd"',
-		'"district_cd"',
-		'"subdistrict_town"',
-		'"village_ward"',
-		'"urban_or_rural"',
-		'"card_name"',
-		'"card_fathername"',
-		'"card_relation"',
-		'"card_yob"',
-		'"card_gender"',
-		'"card_address"',
-		'"abha_no"',
-		'"card_photo"',
-		'"card_print_status"',
-		'"enroll_date"',
-		'"approve_date"',
-		'"card_gen_date"',
-		'"card_print_date"',
-		'"card_distribute_date"',
-		'"card_deliver_date"',
-		'"ben_id"',
-		'"aadhar_id"',
-		'"family_id"',
-		'"age"',
-		'"source_type"',
-		'"created_by"',
-		'"created_dt"',
-		'"updated_by"',
-		'"updated_dt"',
-		'"mobile_number"',
-		'"operator_id"',
-		'"operator_name"',
-		'"operator_contact"',
-		'"state_name"',
-		'"district_name"',
-		'"sub_district_name"',
-		'"village_name"',
+		"card_no",
+		"entity_id",
+		"batch_id",
+		"user_id",
+		"state_cd",
+		"district_cd",
+		"subdistrict_town",
+		"village_ward",
+		"urban_or_rural",
+		"card_name",
+		"card_fathername",
+		"card_relation",
+		"card_yob",
+		"card_gender",
+		"card_address",
+		"abha_no",
+		"card_photo",
+		"card_print_status",
+		"enroll_date",
+		"approve_date",
+		"card_gen_date",
+		"card_print_date",
+		"card_distribute_date",
+		"card_deliver_date",
+		"ben_id",
+		"aadhar_id",
+		"family_id",
+		"age",
+		"source_type",
+		"created_by",
+		"created_dt",
+		"updated_by",
+		"updated_dt",
+		"mobile_number",
+		"operator_id",
+		"operator_name",
+		"operator_contact",
+		"state_name",
+		"district_name",
+		"sub_district_name",
+		"village_name",
 	];
-	let isValidHeader = true;
 
-	for (let i = 0; i < checkHead.length - 1; i++) {
-		if (checkHead[i] !== headers[i]) {
-			isValidHeader = false;
-			break;
-		}
-	}
-	if (!isValidHeader) {
-		return [];
-	}
+	return new Promise((resolve, reject) => {
+		Papa.parse(csvData, {
+			header: true,
+			worker: true,
+			dynamicTyping: true,
+			complete: function (results: any) {
+				const headers = Object.keys(results.data[0]);
+				const isValidHeader = checkHead.every(
+					(header, index) => header === headers[index]
+				);
 
-	return lines.slice(1).map((line) => {
-		const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-		// console.log(values);
-		const record: Record<string, string> = {};
-		headers.forEach((header, index) => {
-			if (
-				![
-					2, 4, 5, 6, 7, 8, 11, 15, 16, 18, 19, 20, 21, 22, 23, 28,
-					29, 30, 31, 32, 34, 35, 36,
-				].includes(index)
-			) {
-				// console.log(header, values[index]);
-				record[header.trim().replace(/^"|"$/g, "")] = values[index]
-					.trim()
-					.replace(/^"|"$/g, ""); // Remove leading and trailing quotes if any
-			}
+				if (!isValidHeader) {
+					// toast.error("Invalid CSV File.");
+					// reject(new Error("Invalid CSV File."));
+					resolve([]);
+				}
+
+				const columnsToRemove = [
+					"batch_id",
+					"entity_id",
+					"state_cd",
+					"district_cd",
+					"subdistrict_town",
+					"village_ward",
+					"urban_or_rural",
+					"abha_no",
+					"card_photo",
+					"card_print_status",
+					"card_relation",
+					"enroll_date",
+					"approve_date",
+					"card_gen_date",
+					"card_print_date",
+					"card_distribute_date",
+					"card_deliver_date",
+					"source_type",
+					"created_by",
+					"created_dt",
+					"updated_by",
+					"updated_dt",
+					"mobile_number",
+					"operator_id",
+					"operator_name",
+					"operator_contact",
+					"state_name",
+					"district_name",
+					"sub_district_name",
+					"village_name",
+				];
+
+				const cleanedData = results.data.map((row: any) => {
+					columnsToRemove.forEach((column) => delete row[column]);
+					return row;
+				});
+
+				resolve(cleanedData);
+			},
+			error: function (error) {
+				toast.error("Error parsing CSV.");
+				reject(error);
+			},
 		});
-		return record;
 	});
 }

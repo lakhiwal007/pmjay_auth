@@ -23,6 +23,10 @@ export default function getFamilyMembersByAdhar(
 	}
 	// console.log(FAMILY_DATA);
 	const member = FAMILY_DATA.find((member: FamilyMemberData) => {
+		console.log(
+			new Date(member.card_yob).getFullYear(),
+			new Date(Scan_Data.dob).getFullYear()
+		);
 		return (
 			member.aadhar_id.substring(8) === adharNumber.substring(8) &&
 			member.card_name === Scan_Data.name &&

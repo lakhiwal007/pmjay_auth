@@ -155,11 +155,9 @@ const FamilyComponent = () => {
 								</div>
 
 								<div>
-									<p className="font-semibold">DOB</p>
+									<p className="font-semibold">YOB</p>
 									<p className="truncate">
-										{new Date(
-											e.card_yob
-										).toLocaleDateString()}{" "}
+										{new Date(e.card_yob).getFullYear()}{" "}
 									</p>
 								</div>
 							</button>
