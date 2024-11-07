@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
 	MdCancel,
 	MdCheckCircle,
-	MdCheckCircleOutline,
 	MdOutlineQrCodeScanner,
 } from "react-icons/md";
 import toast from "react-hot-toast";
@@ -145,11 +144,8 @@ const QrReader = () => {
 			...data,
 		};
 
-		const NotSyncedDataString = localStorage.getItem("notSyncedData") || "";
-		const NotSyncedData = JSON.parse(NotSyncedDataString);
-		const newData = [newObj, ...NotSyncedData];
 		localStorage.setItem("AadharNumber", data.adhar_number);
-		localStorage.setItem("notSyncedData", JSON.stringify(newData));
+		localStorage.setItem("notSyncedData", JSON.stringify(newObj));
 		setisLoading(false);
 		router.push("/family_details");
 	};
@@ -262,7 +258,7 @@ const QrReader = () => {
 						control={control}
 						error={errors.name?.message}
 						maxLength={50}
-						disable
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -275,7 +271,7 @@ const QrReader = () => {
 						control={control}
 						error={errors?.gender?.message}
 						OptionList={GenderRadio}
-						disable
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -286,7 +282,7 @@ const QrReader = () => {
 						name={"dob"}
 						error={errors.dob?.message}
 						control={control}
-						disable
+						disable={isScanedField}
 					/>
 				</div>
 				<div className="w-full">
@@ -304,7 +300,7 @@ const QrReader = () => {
 									{...field}
 									rows={3}
 									maxLength={250}
-									disabled
+									disabled={isScanedField}
 									className={`w-full disabled:bg-[rgb(244,244,242)] ${
 										errors.address?.message !== undefined
 											? "border-orange-600 focus-within:border-orange-600"

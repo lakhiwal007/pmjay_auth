@@ -8,6 +8,17 @@ export type ADHAR_TYPE = {
 	timeAt: string;
 };
 
+export type SCANEDATATYPE = {
+	name: string;
+	address: string;
+	dob: Date;
+	gender: string;
+	status: number;
+	timeAt: string;
+	uid: string;
+	adhar_number: string;
+};
+
 export type LoginType = {
 	username: string;
 	password: string;

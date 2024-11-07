@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import getFamilyMembersByAdhar from "@/utils/getFamilyMembersByAdhar";
-import { FamilyMember, FamilyMemberData } from "@/utils/types";
+import { FamilyMemberData } from "@/utils/types";
 import toast from "react-hot-toast";
 import NODATA from "../../public/no_data_found.svg";
 import Image from "next/image";

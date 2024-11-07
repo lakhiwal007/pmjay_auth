@@ -2,7 +2,50 @@
 export function csvToJson(csvData: string): any[] {
 	const lines = csvData.trim().split("\n");
 	const headers = lines[0].split(",");
-	// console.log(headers);
+	const checkHead = [
+		'"card_no"',
+		'"entity_id"',
+		'"batch_id"',
+		'"user_id"',
+		'"state_cd"',
+		'"district_cd"',
+		'"subdistrict_town"',
+		'"village_ward"',
+		'"urban_or_rural"',
+		'"card_name"',
+		'"card_fathername"',
+		'"card_relation"',
+		'"card_yob"',
+		'"card_gender"',
+		'"card_address"',
+		'"abha_no"',
+		'"card_photo"',
+		'"card_print_status"',
+		'"enroll_date"',
+		'"approve_date"',
+		'"card_gen_date"',
+		'"card_print_date"',
+		'"card_distribute_date"',
+		'"card_deliver_date"',
+		'"ben_id"',
+		'"aadhar_id"',
+		'"family_id"',
+		'"age"',
+		'"source_type"',
+		'"created_by"',
+		'"created_dt"',
+		'"updated_by"',
+		'"updated_dt"',
+		'"mobile_number"',
+		'"operator_id"',
+		'"operator_name"',
+		'"operator_contact"',
+		'"state_name"',
+		'"district_name"',
+		'"sub_district_name"',
+		'"village_name"',
+	];
+
 	return lines.slice(1).map((line) => {
 		const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
 		// console.log(values);
