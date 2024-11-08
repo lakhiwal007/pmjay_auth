@@ -35,12 +35,12 @@ export type FamilyMember = {
 };
 
 export type FamilyMemberData = {
-	family_id: string;
-	ben_id: string;
-	aadhar_id: string;
+	family_id: string | number;
+	ben_id: string | number;
+	aadhar_id: string | number;
 	card_name: string;
 	card_gender: string;
-	card_yob: string;
+	card_yob: string | number;
 	card_address: string;
 };
 

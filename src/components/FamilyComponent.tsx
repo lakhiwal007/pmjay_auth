@@ -55,7 +55,7 @@ const FamilyComponent = () => {
 		setisLoading(true);
 		// Filter familyData to get only checked members
 		const selectedMembers = familyData
-			.filter((member) => checkedItems.includes(member.ben_id))
+			.filter((member) => checkedItems.includes(String(member.ben_id)))
 			.map((member) => ({
 				...member,
 				status: 1,
@@ -108,39 +108,45 @@ const FamilyComponent = () => {
 							<button
 								key={index}
 								className="w-full text-left relative grid grid-cols-3 gap-2 bg-blue-600/50 odd:bg-emerald-600/50 backdrop-blur-md  items-start p-4 rounded-md shadow-md border-[1px] active:shadow-none active:bg-blue-600/60 odd:active:bg-emerald-600/60"
-								onClick={() => handleToggleCheckbox(e.ben_id)}
+								onClick={() =>
+									handleToggleCheckbox(String(e.ben_id))
+								}
 							>
 								<input
 									className="absolute top-2 right-2"
 									type="checkbox"
 									name="memberId"
 									id="memberId"
-									checked={checkedItems.includes(e.ben_id)} // Set checkbox checked state
+									checked={checkedItems.includes(
+										String(e.ben_id)
+									)} // Set checkbox checked state
 									readOnly // Prevent manual change, controlled by button click
 								/>
 								<div className="col-span-2">
 									<p className="font-semibold">Family ID</p>
-									<p className="truncate">{e.family_id}</p>
+									<p className="truncate">{String(e.family_id)}</p>
 								</div>
 								<div className="col-span-2">
 									<p className="font-semibold">
 										Aadhar Number
 									</p>
-									<p className="truncate">{`XXXXXXXX${e.aadhar_id.substring(
-										8
-									)}`}</p>
+									<p className="truncate">{`XXXXXXXX${String(
+										e.aadhar_id
+									).substring(8)}`}</p>
 								</div>
 								<div>
 									<p className="font-semibold">
 										Beneficiary ID
 									</p>
 									<p className="truncate">
-										{e.ben_id.length > 10
-											? `${e.ben_id.substring(
+										{String(e.ben_id).length > 10
+											? `${String(e.ben_id).substring(
 													0,
 													4
-											  )}...${e.ben_id.substring(15)}`
-											: e.ben_id}
+											  )}...${String(e.ben_id).substring(
+													15
+											  )}`
+											: String(e.ben_id)}
 									</p>
 								</div>
 
@@ -157,7 +163,9 @@ const FamilyComponent = () => {
 								<div>
 									<p className="font-semibold">YOB</p>
 									<p className="truncate">
-										{new Date(e.card_yob).getFullYear()}{" "}
+										{new Date(
+											String(e.card_yob)
+										).getFullYear()}{" "}
 									</p>
 								</div>
 							</button>

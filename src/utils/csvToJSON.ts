@@ -51,8 +51,10 @@ export function csvToJson(csvData: File): Promise<any[]> {
 		Papa.parse(csvData, {
 			header: true,
 			worker: true,
-			dynamicTyping: true,
+            dynamicTyping: true,
+            
 			complete: function (results: any) {
+				console.log(results.data[0]);
 				const headers = Object.keys(results.data[0]);
 				const isValidHeader = checkHead.every(
 					(header, index) => header === headers[index]

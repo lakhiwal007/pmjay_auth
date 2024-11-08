@@ -174,7 +174,7 @@ const DashboardComponent = () => {
 										<th>Member ID</th>
 										<th>Name</th>
 										<th>Gender</th>
-										<th>DOB</th>
+										<th>YOB</th>
 										<th>Address</th>
 										<th>Status</th>
 										<th>Delivered At</th>
@@ -185,17 +185,19 @@ const DashboardComponent = () => {
 											className="w-[1100px] grid grid-cols-8 gap-2 px-2 py-4 rounded odd:bg-slate-100 divide-x-[1px] text-center"
 										>
 											<td className="truncate text-left pl-2">
-												{e.family_id}
+												{String(e.family_id)}
 											</td>
 											<td className="truncate text-left pl-2">
-												{e.ben_id.length > 10
-													? `${e.ben_id.substring(
+												{String(e.ben_id).length > 10
+													? `${String(
+															e.ben_id
+													  ).substring(
 															0,
 															3
-													  )}...${e.ben_id.substring(
-															16
-													  )}`
-													: e.ben_id}
+													  )}...${String(
+															e.ben_id
+													  ).substring(16)}`
+													: String(e.ben_id)}
 											</td>
 											<td className="truncate text-left pl-2">
 												{e.card_name}
@@ -204,12 +206,14 @@ const DashboardComponent = () => {
 												{e.card_gender}
 											</td>
 											<td className="truncate">
-												{new Date(
-													e.card_yob
-												).toLocaleDateString()}{" "}
+												{String(
+													new Date(
+														String(e.card_yob)
+													).getFullYear()
+												)}
 											</td>
 											<td className="truncate text-left pl-4">
-												{e.card_address}
+											  	{e.card_address}
 											</td>
 											<td>
 												{e.status === 2
