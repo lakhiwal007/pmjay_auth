@@ -1,9 +1,8 @@
 {
-    "build": {
-      "env": {
-        "DATABASE_URL": "postgresql://astrolife:astrolife@13.211.96.255/genai?schema=public"
-      }
-    },
-    "buildCommand": "prisma generate && next build"
-  }
-  
+	"build": {
+		"env": {
+			"DATABASE_URL": "postgresql://astrolife:astrolife@13.211.96.255/genai?schema=public"
+		}
+	},
+	"buildCommand": "next build"
+}
