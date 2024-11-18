@@ -121,6 +121,7 @@ export const encryptedGenToken =
 export const apiHeaders = {
 	accept: "application/json, text/plain, */*",
 	appname: "BIS",
+	"access-control-allow-origin": "https://pmjay-auth.vercel.app",
 	"cache-control": "no-cache",
 	"content-type": "application/json; charset=UTF-8",
 	pragma: "no-cache",
