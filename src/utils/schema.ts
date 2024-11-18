@@ -14,6 +14,30 @@ const DateYup = yup
 	.required("Required*")
 	.typeError("Enter a valid date");
 
+const OptionalYup = (name: string) => {
+	return yup.string().when(name, {
+		is: (value: any) => value === "16",
+		then: (schema) =>
+			schema
+				.required("Required*")
+				.min(3, "Minimum 3 characters allowed.*")
+				.max(20),
+		otherwise: (schema) => schema.nullable(),
+	});
+};
+const OptionalYup2 = (name: string) => {
+	return yup.string().when(name, {
+		is: (value: any) => value === "56",
+		then: (schema) =>
+			schema
+				.required("Required*")
+				.matches(TEXT_REG, TEXT_MSG)
+				.min(3, "Minimum 3 characters allowed.*")
+				.max(20),
+		otherwise: (schema) => schema.nullable(),
+	});
+};
+
 export const AdharSchema = yup.object().shape({
 	adhar_number: TextYup({
 		len: 12,
@@ -26,9 +50,10 @@ export const AdharSchema = yup.object().shape({
 });
 
 export const LoginSchema = yup.object().shape({
-	username: TextYup({ len: 6, msg: "Min 6 characters allowed" }),
-	password: yup
-		.string()
-		.required("Required*")
-		.min(6, "Minimum 6 characters allowed*"),
+	captcha: TextYup({ len: 6, msg: "Invalid Captcha" }),
+	captcha2: TextYup({ len: 6, msg: "Invalid Captcha" }),
+	userid: yup.string().required("Required*"),
+	authMode: yup.string().required("Required*"),
+	otp: OptionalYup2("authMode"),
+	password: OptionalYup("authMode"),
 });

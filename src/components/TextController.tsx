@@ -38,7 +38,13 @@ const TextController = ({
 				render={({ field }) => (
 					<input
 						{...field}
-						type={type !== "password" ? "text" : "password"}
+						type={
+							type === "password"
+								? "password"
+								: type === "number"
+								? "tel"
+								: "text"
+						}
 						maxLength={maxLength}
 						onKeyDown={(e) => type === "number" && handleKeyDown(e)}
 						disabled={disable}

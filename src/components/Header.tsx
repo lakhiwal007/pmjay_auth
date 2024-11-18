@@ -23,7 +23,7 @@ const Header = ({ username }: Props) => {
 
 	return (
 		<div className="w-full flex shadow-sm rounded p-2 justify-between items-center">
-			<Link href={"/dashboard"}>
+			<Link href={"/"}>
 				<Image
 					src={LOGO}
 					width={120}
@@ -40,28 +40,14 @@ const Header = ({ username }: Props) => {
 						<div className=" relative flex items-center">
 							<MdPerson className="w-8 h-8" />
 							<p
-								className={`w-4 h-4 p-[2px] absolute right-3 -top-2 rounded-full shadow-lg flex items-center justify-center text-white ${
+								className={`w-4 h-4 p-[2px] absolute right-1 -top-2 rounded-full shadow-lg flex items-center justify-center text-white ${
 									isConnected ? "bg-green-600" : "bg-red-700"
 								}`}
 							>
 								{isConnected ? <MdWifi /> : <MdWifiOff />}
 							</p>
-							<MdArrowDropDown />
 						</div>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="start">
-						<DropdownMenuLabel>My Account</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							onClick={() => {
-								localStorage.removeItem("userId");
-								localStorage.removeItem("username");
-								router.replace("/");
-							}}
-						>
-							Logout
-						</DropdownMenuItem>
-					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
 		</div>

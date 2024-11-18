@@ -7,14 +7,14 @@ const HomeComponent = () => {
 	const router = useRouter();
 
 	const [username, setUsername] = useState("");
-	useEffect(() => {
-		const userId = localStorage.getItem("userId") || "";
-		if (!userId) {
-			router.replace("/");
-		}
-		const UserName = localStorage.getItem("username") || "";
-		setUsername(UserName);
-	}, [router]);
+	// useEffect(() => {
+	// 	const userId = localStorage.getItem("userId") || "";
+	// 	if (!userId) {
+	// 		router.replace("/");
+	// 	}
+	// 	const UserName = localStorage.getItem("username") || "";
+	// 	setUsername(UserName);
+	// }, [router]);
 
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">

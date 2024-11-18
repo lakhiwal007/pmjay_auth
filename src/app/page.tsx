@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Login from "@/components/Login";
+import DashBoardPage from "./dashboard/page";
 
 export default function Home() {
-	return <Login />;
+	return <DashBoardPage />;
 }

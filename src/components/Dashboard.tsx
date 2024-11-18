@@ -7,22 +7,16 @@ import {
 	MdUploadFile,
 } from "react-icons/md";
 
-import {
-	FaFileCircleCheck,
-	FaFileCircleXmark,
-	FaFileLines,
-} from "react-icons/fa6";
+import { FaFileLines } from "react-icons/fa6";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-	FamilyMemberNotSynced,
-	FamilyMemberNotSyncedData,
-} from "@/utils/types";
+import { FamilyMemberNotSyncedData } from "@/utils/types";
 import Header from "./Header";
 import Card from "./Card";
 import Paginator from "@/utils/paginator";
 import { csvToJson } from "@/utils/csvToJSON";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
+import LoginModal from "./LoginModal";
 
 const DashboardComponent = () => {
 	const router = useRouter();
@@ -36,6 +30,7 @@ const DashboardComponent = () => {
 	>([]);
 	const [NotSyncCount, setNotSyncCount] = useState(0);
 	const [CurrPageIndex, setCurrPageIndex] = useState(Number(cuurIndex));
+	const [isLoginModal, setisLoginModal] = useState(false);
 	const NUM_ROWS = 5;
 
 	useEffect(() => {
@@ -43,10 +38,6 @@ const DashboardComponent = () => {
 	}, [cuurIndex]);
 
 	useEffect(() => {
-		const userId = localStorage.getItem("userId") || "";
-		if (!userId) {
-			router.replace("/");
-		}
 		const UserName = localStorage.getItem("username") || "";
 		setUsername(UserName);
 	}, [router]);
@@ -122,7 +113,7 @@ const DashboardComponent = () => {
 							/>
 						</button>
 						<button
-							// onClick={() => router.push("")}
+							onClick={() => setisLoginModal(true)}
 							type="button"
 							className="w-full relative flex items-center justify-center shadow-lg active:shadow-none bg-green-700 px-4 py-2 rounded text-white tracking-widest font-semibold"
 						>
@@ -213,7 +204,7 @@ const DashboardComponent = () => {
 												)}
 											</td>
 											<td className="truncate text-left pl-4">
-											  	{e.card_address}
+												{e.card_address}
 											</td>
 											<td>
 												{e.status === 2
@@ -250,6 +241,7 @@ const DashboardComponent = () => {
 				)}
 			</div>
 			{isUploading && <Loader title="Uploading Data" />}
+			{isLoginModal && <LoginModal setUsername={setUsername} setisLoginModal={setisLoginModal} />}
 		</div>
 	);
 };

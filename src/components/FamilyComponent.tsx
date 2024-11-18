@@ -16,13 +16,13 @@ const FamilyComponent = () => {
 	const [isLoading, setisLoading] = useState(false);
 
 	useEffect(() => {
-		const userId = localStorage.getItem("userId") || "";
+		// const userId = localStorage.getItem("userId") || "";
 		const AdharNum = localStorage.getItem("AadharNumber") || "";
-		if (!userId) {
-			router.replace("/");
-		}
+		// if (!userId) {
+		// 	router.replace("/");
+		// }
 		if (!AdharNum) {
-			router.replace("/dashboard");
+			router.replace("/");
 		}
 		const UserName = localStorage.getItem("username") || "";
 		setAdharNum(AdharNum);
@@ -79,7 +79,7 @@ const FamilyComponent = () => {
 					"notSyncedFamilyData",
 					JSON.stringify(selectedMembers)
 				);
-				router.replace("/dashboard");
+				router.replace("/");
 				setisLoading(false);
 			} else {
 				const NotSyncedData = JSON.parse(NotSyncedDataString);
@@ -88,7 +88,7 @@ const FamilyComponent = () => {
 					"notSyncedFamilyData",
 					JSON.stringify(newData)
 				);
-				router.replace("/dashboard");
+				router.replace("/");
 				setisLoading(false);
 			}
 		}
@@ -124,7 +124,9 @@ const FamilyComponent = () => {
 								/>
 								<div className="col-span-2">
 									<p className="font-semibold">Family ID</p>
-									<p className="truncate">{String(e.family_id)}</p>
+									<p className="truncate">
+										{String(e.family_id)}
+									</p>
 								</div>
 								<div className="col-span-2">
 									<p className="font-semibold">
