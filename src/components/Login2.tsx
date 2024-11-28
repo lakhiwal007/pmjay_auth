@@ -14,6 +14,7 @@ import SelectInput from "./SelectInput";
 import { AUTHMODE, BASE64_IMG, TOKEN } from "@/utils/constants";
 import {
 	CaptchaCheckAPI,
+	CardDeliveryAPI,
 	DecryptAPI,
 	GenerateCaptchaAPI,
 	GenerateTokenAPI,
@@ -25,13 +26,14 @@ import { MdClose, MdRotateRight } from "react-icons/md";
 import { aesUtil } from "@/utils/encryptDecrypt1";
 import { bisEncrypt } from "@/utils/encryptDecrypt2";
 
-const Login = ({ setisLoginModal, setUsername }: any) => {
+const Login = ({ setisLoginModal, setUsername, setisLoggedIn }: any) => {
 	const {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting, isValid },
 		watch,
 		setValue,
+		reset,
 	} = useForm({
 		mode: "all",
 		defaultValues: {
@@ -60,6 +62,7 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 	const [transactionID, setTransactionID] = useState("");
 	const [AuthToken, setAuthToken] = useState("");
 	const [UserId, setUserId] = useState("");
+	const [UserId2, setUserId2] = useState("");
 
 	const [isVerified, setisVerified] = useState(false);
 
@@ -69,8 +72,13 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 			const res = await response.text();
 			// console.log(res);
 			if (response.ok) {
-				if (res.length > 7) {
+				if (res.length > 12) {
 					settoken(res);
+					localStorage.setItem("genCaptchaToken", res);
+				} else {
+					const tokenData =
+						localStorage.getItem("genCaptchaToken") || "";
+					settoken(tokenData);
 				}
 			}
 		};
@@ -113,7 +121,11 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 				setUserId(res.userid);
 				setisVerified(true);
 				const authWatch =
-					res.defaultAuthMode === 16 ? "Password" : "Mobile_OTP";
+					res.defaultAuthMode === 16
+						? "Password"
+						: res.defaultAuthMode === 56
+						? "Mobile_OTP"
+						: "";
 				setValue("authMode", String(res.defaultAuthMode), {
 					shouldValidate: true,
 					shouldDirty: true,
@@ -150,13 +162,25 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 				);
 				// console.log("captchaDecrypt", captchaDecrypt);
 				setimgSRC2(captchaDecrypt);
-				setUserId(res.userid);
+				setUserId2(res.userid);
 				setcaptchaID2(res.transactionid);
 			}
 		} catch (error) {
 			toast.error("Something Went Wrong.");
 		}
 	};
+
+	useEffect(() => {
+		const authName =
+			watchAuthMode === "16"
+				? "Password"
+				: watchAuthMode === "56"
+				? "Mobile_OTP"
+				: "";
+		if (UserId !== "" && watchAuthMode !== "") {
+			InitAPI(token, UserId, authName);
+		}
+	}, [UserId, watchAuthMode, token]);
 
 	useEffect(() => {
 		const userId = localStorage.getItem("userId") || "";
@@ -199,6 +223,7 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 			localStorage.setItem("userid", DecryptJsonData.userid);
 			setUsername(DecryptJsonData.username);
 			setisLoginModal(false);
+			setisLoggedIn(true);
 			toast.success("You are logged in");
 		}
 	};
@@ -223,6 +248,8 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 				// console.log("Validate API is OK", res);
 				decryptAPI(token, res.transactionid, res.authtoken);
 			} else if (response.status === 400) {
+				setisLoginModal(false);
+				setisLoggedIn(true);
 				toast.error(res?.error?.message);
 			}
 		} catch (error) {
@@ -237,6 +264,8 @@ const Login = ({ setisLoginModal, setUsername }: any) => {
 		if (response.ok) {
 			setimgSRC(res.captcha);
 			setcaptchaID(res.transactionid);
+			reset();
+			setisVerified(false);
 		}
 	};
 	const handleCaptcha2 = async () => {

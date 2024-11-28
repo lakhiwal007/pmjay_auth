@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import DashBoardPage from "./dashboard/page";
+import DashboardComponent from "@/components/Dashboard";
 
 export default function Home() {
-	return <DashBoardPage />;
+	return <DashboardComponent />;
 }

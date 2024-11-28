@@ -17,6 +17,8 @@ import { csvToJson } from "@/utils/csvToJSON";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
 import LoginModal from "./LoginModal";
+import { useNetworkConnectivity } from "@/hooks/useNetworkConnectivity";
+import { CardDeliveryAPI } from "@/utils/BIS_APIs/genearteToken";
 
 const DashboardComponent = () => {
 	const router = useRouter();
@@ -25,13 +27,19 @@ const DashboardComponent = () => {
 
 	const [username, setUsername] = useState("");
 	const [isUploading, setisUploading] = useState(false);
+	const [isLoading, setisLoading] = useState(false);
 	const [NotSyncedData, setNotSyncedData] = useState<
 		FamilyMemberNotSyncedData[]
 	>([]);
+	const [cardSelected, setcardSelected] = useState("DELEVERED");
 	const [NotSyncCount, setNotSyncCount] = useState(0);
+	const [DeleveredCount, setDeleveredCount] = useState(0);
 	const [CurrPageIndex, setCurrPageIndex] = useState(Number(cuurIndex));
 	const [isLoginModal, setisLoginModal] = useState(false);
 	const NUM_ROWS = 5;
+
+	const [isLoggedIn, setisLoggedIn] = useState(false);
+	const isConnected = useNetworkConnectivity({});
 
 	useEffect(() => {
 		setCurrPageIndex(Number(cuurIndex));
@@ -43,14 +51,44 @@ const DashboardComponent = () => {
 	}, [router]);
 
 	useEffect(() => {
+		const deliverCount = Number(localStorage.getItem("delvrCount")) || 0;
+		const synCount = Number(localStorage.getItem("synCount")) || 0;
+		if (deliverCount) {
+			setDeleveredCount(deliverCount);
+		} else {
+			localStorage.setItem("delvrCount", "0");
+		}
+		if (synCount) {
+			setNotSyncCount(synCount);
+		} else {
+			localStorage.setItem("synCount", "0");
+		}
+	}, []);
+
+	useEffect(() => {
 		const dataString = localStorage.getItem("notSyncedFamilyData") || "";
-		if (dataString !== "") {
+		const dataUpdated = localStorage.getItem("updatedCards") || "";
+		const DeleveredCount = Number(localStorage.getItem("delvrCount")) || 0;
+		const SyncedCount = Number(localStorage.getItem("synCount")) || 0;
+		if (dataString !== "" && cardSelected === "DELEVERED") {
 			const data: FamilyMemberNotSyncedData[] = JSON.parse(dataString);
-			setNotSyncCount(data.length);
+			setDeleveredCount(DeleveredCount + data.length);
+			localStorage.setItem(
+				"delvrCount",
+				String(DeleveredCount + data.length)
+			);
 			const InitialIndex = (CurrPageIndex - 1) * NUM_ROWS;
 			setNotSyncedData(data.slice(InitialIndex, InitialIndex + NUM_ROWS));
 		}
-	}, [CurrPageIndex]);
+
+		if (dataUpdated !== "" && cardSelected === "SYNCED") {
+			const data: FamilyMemberNotSyncedData[] = JSON.parse(dataUpdated);
+			setNotSyncCount(SyncedCount + data.length);
+			localStorage.setItem("synCount", String(SyncedCount + data.length));
+			const InitialIndex = (CurrPageIndex - 1) * NUM_ROWS;
+			setNotSyncedData(data.slice(InitialIndex, InitialIndex + NUM_ROWS));
+		}
+	}, [CurrPageIndex, cardSelected]);
 
 	const onPageHandle = (pageNum: number) => {
 		setCurrPageIndex(pageNum + 1);
@@ -79,6 +117,60 @@ const DashboardComponent = () => {
 			setisUploading(false);
 		}
 	};
+
+	useEffect(() => {
+		const CardString = localStorage.getItem("notSyncedFamilyData") || "";
+		if (isLoggedIn && isConnected && CardString !== "") {
+			const authToken = localStorage.getItem("authToken") || "";
+			const CardsList = JSON.parse(CardString) || [];
+			const syncCards = async () => {
+				try {
+					setisLoading(true);
+
+					// Process all card delivery operations concurrently
+					const updatedCards = await Promise.all(
+						CardsList.map(async (card: any) => {
+							const cardResponse = await CardDeliveryAPI(
+								authToken,
+								[card.card_no],
+								card.state_cd
+							);
+							const cardRes = await cardResponse.json();
+
+							if (cardResponse.ok) {
+								card.status =
+									cardRes.success === "Success" ? 2 : 3;
+							} else {
+								card.status = 1;
+							}
+							return card;
+						})
+					);
+					const synCount =
+						Number(localStorage.getItem("synCount")) || 0;
+					setNotSyncCount(synCount + updatedCards.length);
+					setNotSyncedData((prev) => [...updatedCards, prev]);
+					localStorage.setItem("notSyncedFamilyData", "");
+					localStorage.setItem(
+						"synCount",
+						String(synCount + updatedCards.length)
+					);
+					localStorage.setItem(
+						"updatedCards",
+						JSON.stringify(updatedCards)
+					);
+
+					// You can use updatedCards for further processing if needed
+					toast.success("Cards synced successfully!");
+				} catch (error) {
+					toast.error("Something went wrong. Try again.");
+				} finally {
+					setisLoading(false);
+				}
+			};
+			syncCards();
+		}
+	}, [isConnected, isLoggedIn]);
 
 	return (
 		<div className="max-w-[450px] min-h-screen flex flex-col items-center justify-start mx-auto">
@@ -125,18 +217,20 @@ const DashboardComponent = () => {
 				<div className="w-full grid grid-cols-2 gap-4">
 					<Card
 						Title={"Delivered"}
-						Count={0}
+						Count={DeleveredCount}
 						Icon={FaFileLines}
 						classNameButton="shadow-teal-100 bg-teal-100"
 						classNameIcon="text-teal-700"
+						onClickFn={() => setcardSelected("DELEVERED")}
 					/>
 
 					<Card
-						Title={"Not Synced"}
+						Title={"Synced"}
 						Count={NotSyncCount}
 						Icon={MdOutlinePendingActions}
 						classNameButton="shadow-gray-100 bg-gray-100"
 						classNameIcon="text-gray-700"
+						onClickFn={() => setcardSelected("SYNCED")}
 					/>
 					{/* <Card
 						Title={"Accepted"}
@@ -154,7 +248,7 @@ const DashboardComponent = () => {
 					/> */}
 				</div>
 
-				{NotSyncCount > 0 ? (
+				{DeleveredCount > 0 ? (
 					<div className="w-full sticky top-0 mt-4">
 						<div className="w-full max-h-screen overflow-x-scroll">
 							<table className="w-full shadow-lg rounded">
@@ -208,9 +302,9 @@ const DashboardComponent = () => {
 											</td>
 											<td>
 												{e.status === 2
-													? "Accepted"
+													? "Success"
 													: e.status === 3
-													? "Rejected"
+													? "Failed"
 													: "Not Synced"}
 											</td>
 											<td>
@@ -241,7 +335,14 @@ const DashboardComponent = () => {
 				)}
 			</div>
 			{isUploading && <Loader title="Uploading Data" />}
-			{isLoginModal && <LoginModal setUsername={setUsername} setisLoginModal={setisLoginModal} />}
+			{isLoading && <Loader title="Data Sync in Progress..." />}
+			{isLoginModal && (
+				<LoginModal
+					setUsername={setUsername}
+					setisLoginModal={setisLoginModal}
+					setisLoggedIn={setisLoggedIn}
+				/>
+			)}
 		</div>
 	);
 };

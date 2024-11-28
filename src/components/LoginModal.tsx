@@ -1,7 +1,7 @@
 "use client";
 import Login from "./Login2";
 
-const LoginModal = ({ setisLoginModal, setUsername }: any) => {
+const LoginModal = ({ setisLoginModal, setUsername, setisLoggedIn }: any) => {
 	return (
 		<>
 			<div className="w-full min-h-[100vh] top-0 left-0 fixed flex items-center justify-center bg-black/40 z-50 backdrop-blur-sm">
@@ -10,6 +10,7 @@ const LoginModal = ({ setisLoginModal, setUsername }: any) => {
 				<Login
 					setUsername={setUsername}
 					setisLoginModal={setisLoginModal}
+					setisLoggedIn={setisLoggedIn}
 				/>
 			</div>
 		</>

@@ -174,6 +174,8 @@ export const CardDeliveryAPI = async (
 		method: "POST",
 		headers: {
 			...apiHeaders,
+			authority: "apisbeta.nha.gov.in",
+			async: "Y",
 			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify(bodyData),
