@@ -13,16 +13,16 @@ export default withPWA({
 		bodyParser: false, // Disable the default body parser for API routes
 		logging: {
 			fetches: {
-			  fullUrl: true, // Log full URLs for fetch requests
+				fullUrl: true, // Log full URLs for fetch requests
 			},
-		},	
-	  },
-	logging: {
-		fetches: {
-		  fullUrl: true, // Log full URLs for fetch requests
 		},
 	},
-		cacheOnFrontEndNav: true,
+	logging: {
+		fetches: {
+			fullUrl: true, // Log full URLs for fetch requests
+		},
+	},
+	cacheOnFrontEndNav: true,
 	aggressiveFrontEndNavCaching: true,
 	reloadOnOnline: true,
 	cacheStartUrl: true,

@@ -72,19 +72,16 @@ const DashboardComponent = () => {
 		const SyncedCount = Number(localStorage.getItem("synCount")) || 0;
 		if (dataString !== "" && cardSelected === "DELEVERED") {
 			const data: FamilyMemberNotSyncedData[] = JSON.parse(dataString);
-			setDeleveredCount(DeleveredCount + data.length);
-			localStorage.setItem(
-				"delvrCount",
-				String(DeleveredCount + data.length)
-			);
+			setDeleveredCount(data.length);
+			localStorage.setItem("delvrCount", String(data.length));
 			const InitialIndex = (CurrPageIndex - 1) * NUM_ROWS;
 			setNotSyncedData(data.slice(InitialIndex, InitialIndex + NUM_ROWS));
 		}
 
 		if (dataUpdated !== "" && cardSelected === "SYNCED") {
 			const data: FamilyMemberNotSyncedData[] = JSON.parse(dataUpdated);
-			setNotSyncCount(SyncedCount + data.length);
-			localStorage.setItem("synCount", String(SyncedCount + data.length));
+			setNotSyncCount(data.length);
+			localStorage.setItem("synCount", String(data.length));
 			const InitialIndex = (CurrPageIndex - 1) * NUM_ROWS;
 			setNotSyncedData(data.slice(InitialIndex, InitialIndex + NUM_ROWS));
 		}
