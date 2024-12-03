@@ -4,6 +4,7 @@ import { aesUtil } from "../encryptDecrypt1";
 import { apiURLs } from "../apiURL";
 import { apiHeaders, encryptedGenToken } from "../constants";
 import { bisEncrypt } from "../encryptDecrypt2";
+// import { Alert } from "react-native";
 
 const UUID = uuidv4();
 const timeWithUUID = `${UUID}${moment().format("ddMMYYYYHHmmss")} `;
@@ -24,6 +25,7 @@ export const GenerateTokenAPI = async () => {
 
 	return response;
 };
+
 
 export const GenerateCaptchaAPI = async (token: string) => {
 	const response = await fetch(apiURLs.genCaptcha, {

@@ -35,8 +35,8 @@ const DashboardComponent = () => {
 	const [NotSyncCount, setNotSyncCount] = useState(0);
 	const [DeleveredCount, setDeleveredCount] = useState(0);
 	const [CurrPageIndex, setCurrPageIndex] = useState(Number(cuurIndex));
-	const [isLoginModal, setisLoginModal] = useState(false);
 	const NUM_ROWS = 5;
+	const [isLoginModal, setisLoginModal] = useState(false);
 
 	const [isLoggedIn, setisLoggedIn] = useState(false);
 	const isConnected = useNetworkConnectivity({});
