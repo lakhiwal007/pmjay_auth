@@ -11,6 +11,7 @@ const nextConfig = {
 export default withPWA({
 	api: {
 		bodyParser: false, // Disable the default body parser for API routes
+		responseLimit: false,
 		logging: {
 			fetches: {
 				fullUrl: true, // Log full URLs for fetch requests

@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// npx prisma migrate dev --name init , npx prisma migrate dev --name add_entry_model
+// npx prisma generate
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  uid       String?
+  createdAt DateTime @default(now())
+  AddedEntries Entry[]                           // One-to-many relation to Entry model
+}
+
+model Entry {
+  id        Int      @id @default(autoincrement()) // Primary key
+  aadharNo  String   @unique                      // Unique Aadhar number
+  status    String                                // Status of the entry
+  key       Int      @relation(fields: [keyId], references: [id]) // Foreign key referring to User
+  keyId     Int                                    // Field used to store the reference ID
+  createdAt DateTime @default(now())               // Timestamp
+}
